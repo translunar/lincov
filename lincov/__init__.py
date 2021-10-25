@@ -110,6 +110,75 @@ class LinCov(object):
         
         return H, R_att
 
+    def altimeter_update(self, x, P, rel):
+        if rel in ('earth', 399):
+            body_id = 399
+            x_pci   = x.eci
+        elif rel in ('moon', 301):
+            body_id = 301
+            x_pci   = x.lci
+
+        u_alt = np.array([0.0, 0.0, 1.0]) # Boresight is +z-axis
+
+        R_alt = np.array([[x.params.altimeter_sigma]])
+        H = np.zeros((1, self.N))
+
+        # If we cared about the range-rate component, we would want to do
+        # this in an PCPF frame, but let's just skip that and do PCI 
+        u_pci = x.T_inrtl_to_body.T.dot(self.T_alt_to_body.dot( u_alt ))
+
+        # Re-center at the spacecraft
+        r_rel_pci = x_pci[0:3] + u_pci
+        H[0,0:3] = r_rel_pci / norm(r_rel_pci)
+
+        return H, R_alt
+
+
+    def vel_update(self, x, P, rel):
+        if rel in ('earth', 399):
+            body_id = 399
+            x_pci   = x.eci
+            Tdot_inrtl_to_pcpf = self.T_inrtl_to_ecef[3:6,0:3]
+        elif rel in ('moon', 301):
+            body_id = 301
+            x_pci   = x.lci
+            Tdot_inrtl_to_pcpf = self.T_inrtl_to_lclf[3:6,0:3]
+
+        # These unit vectors are computed from azimuths and elevations
+        # given in the yml. The computation is done in yaml_loader.py.
+        # They are in the NDL frame.
+        T_inrtl_to_vel = x.T_inrtl_to_body[0:3,0:3].T.dot(self.T_vel_to_body).T
+        T_inrtl_to_vel_a = T_inrtl_to_vel.dot(x.params.T_vel_a)
+        T_inrtl_to_vel_b = T_inrtl_to_vel.dot(x.params.T_vel_b)
+        T_inrtl_to_vel_c = T_inrtl_to_vel.dot(x.params.T_vel_c)
+
+        zhat = np.array([0.0, 0.0, 1.0])
+        
+        u_a_inrtl = zhat.dot(T_inrtl_to_vel_a)
+        u_b_inrtl = zhat.dot(T_inrtl_to_vel_b)
+        u_c_inrtl = zhat.dot(T_inrtl_to_vel_c)
+
+        # Get distance from laser to nearest point on planet surface. If zero, we can use the measurement
+        dist_a = spice.npedln(a,b,c, x_pci[0:3], u_a_inrtl[0,:])[1]
+        dist_b = spice.npedln(a,b,c, x_pci[0:3], u_b_inrtl[1,:])[1]
+        dist_c = spice.npedln(a,b,c, x_pci[0:3], u_c_inrtl[2,:])[1]
+
+        H = np.zeros((3, self.N))
+        if dist_a == 0:
+            H[0,0:3] = u_a_inrtl.dot(Tdot_inrtl_to_pcpf.T) # this second term is negative omega cross, hopefully
+            H[0,3:6] = u_a_inrtl
+        if dist_b == 0:
+            H[1,0:3] = u_b_inrtl.dot(Tdot_inrtl_to_pcpf.T) # this second term is negative omega cross, hopefully
+            H[1,3:6] = u_b_inrtl
+        if dist_c == 0:
+            H[2,0:3] = u_c_inrtl.dot(Tdot_inrtl_to_pcpf.T) # this second term is negative omega cross, hopefully
+            H[2,3:6] = u_c_inrtl
+
+        R_vel = np.eye(3) * x.params.vel_sigma**2
+
+        return H, R_vel
+        
+
     def horizon_update(self, x, P, rel, plot=False):
         if rel in ('earth', 399):
             body_id = 399
@@ -134,8 +203,8 @@ class LinCov(object):
             plt.show()
             
         H = np.zeros((3, self.N))
-        H[0:3,0:3] = x.T_body_to_cam.dot(x.T_inrtl_to_body)
-        H[0:3,6:9] = x.T_body_to_cam.dot(pq.skew(x.T_inrtl_to_body.dot(r_pci)))
+        H[0:3,0:3] = x.T_body_to_horizon_cam.dot(x.T_inrtl_to_body)
+        H[0:3,6:9] = x.T_body_to_horizon_cam.dot(pq.skew(x.T_inrtl_to_body.dot(r_pci)))
 
         return H, R_cam
 

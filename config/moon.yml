@@ -15,4 +15,17 @@ params:
   horizon_theta_max_deg: 70.0 # half angle of horizon to use
   horizon_fpa_size: 4096
   horizon_sigma_pix: 0.063
-  horizon_n_max: 1000
+  horizon_n_max: 1000  altimeter_max_alt: 84.0 # km
+  altimeter_sigma: 5.0 # FIXME --- unknown! JW 10-20-2021 (should be terrain variation)
+  vel_sigma: 0.015
+  vel_a_az_el_deg: [90.0,  90.0]
+  vel_b_az_el_deg: [30.0,  30.0]
+  vel_c_az_el_deg: [150.0, 30.0]
+command: # this section commands the attitude for this lincov run
+  center: moon
+  primary:
+    vector: [0.0, 0.0, 1.0]
+    direction: nadir
+  secondary:
+    vector: [0.0, 1.0, 0.0]
+    direction: prograde

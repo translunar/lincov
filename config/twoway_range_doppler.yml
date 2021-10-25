@@ -14,3 +14,7 @@ params:
   radiometric_min_elevation_deg: 5.0
   twoway_doppler_sigma: 0.001 # meters
   twoway_range_sigma: 2.0 # meters
+  ground_stations: # list of ground stations plus their NAIF IDs
+    DSS-24: 399024
+    DSS-34: 399034
+    DSS-54: 399054

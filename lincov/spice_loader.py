@@ -38,17 +38,26 @@ class SpiceLoader(object):
         return self.loaded
 
     def load_constants(self):
-        self.r_earth         = spice.bodvcd(399, 'RADII', 3)[1]
-        self.r_moon          = spice.bodvcd(301, 'RADII', 3)[1]
+        self.radii_earth     = np.array(spice.bodvcd(399, 'RADII', 3)[1])
+        self.radii_moon      = np.array(spice.bodvcd(301, 'RADII', 3)[1])
+        self.r_earth         = self.radii_earth[1]
+        self.r_moon          = self.radii_moon[1]
+
         self.mu_earth        = spice.bodvcd(399, 'GM', 1)[1]
         self.mu_moon         = spice.bodvcd(301, 'GM', 1)[1]
 
-        # Constants that should ultimately probably go in SPICE kernels.
-        # For now let's just pretend they're in SPICE kernels.
-        self.T_body_to_att   = np.identity(3)
-        self.T_body_to_cam   = np.identity(3)
+        # Constants that should ultimately probably go in SPICE kernels
+        # once we're working with attitude timelines and frame kernels.
+        # For now let's just pretend they're in SPICE kernels since we
+        # have no spacecraft attitude to contend with.
+        self.T_body_to_att           = np.identity(3)
+        self.T_body_to_horizon_cam   = np.identity(3)
+        self.T_body_to_alt           = np.identity(3)
+        self.T_body_to_vel           = np.identity(3)
+        self.T_body_to_trn_cam       = np.identity(3)
+        self.T_body_to_hrn_cam       = np.identity(3)
         
-        self.start, self.end = self.coverage()
+        self.start, self.end = self.coverage(id = self.object_id)
 
     def radii(self, body):
         if body in (399, 'earth'):

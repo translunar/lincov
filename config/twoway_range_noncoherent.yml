@@ -12,3 +12,7 @@ params:
   att_sigma_arcsec: [5.0, 5.0, 70.0] # star tracker standard deviation (z is star camera roll)
   radiometric_min_elevation_deg: 5.0
   twoway_range_sigma: 155.2 # meters
+  ground_stations: # list of ground stations plus their NAIF IDs
+    DSS-24: 399024
+    DSS-34: 399034
+    DSS-54: 399054

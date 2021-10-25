@@ -21,28 +21,42 @@ def sun_spacecraft_angle(body, time, object_id):
 class State(object):
     """State information for the linear covariance analysis"""
 
-    ground_stations = { 'DSS-24': 399024,
-                        'DSS-34': 399034,
-                        'DSS-54': 399054 }
+    #ground_stations = { 'DSS-24': 399024,
+    #                    'DSS-34': 399034,
+    #                    'DSS-54': 399054 }
 
     r_station_ecef = {}
     
-    def __init__(self, time, loader = None, params = None):
+    def __init__(self, time, loader = None, params = None, command = None):
         self.loader = loader
         self.params = params
+        self.command = command
         self.mu_earth = loader.mu_earth * 1e9
         self.mu_moon  = loader.mu_moon * 1e9
 
         # Ensure that ground station locations are loaded
-        if len(State.r_station_ecef) == 0:
-            for station in State.ground_stations:
-                gid = self.ground_stations[station]
+        if len(State.r_station_ecef) == 0 and (self.params is not None and 'ground_stations' in self.params):
+            for station in self.params.ground_stations:
+                gid = self.params.ground_stations[station]
                 State.r_station_ecef[station] = spice.spkezr(station, self.loader.start, 'ITRF93', 'NONE', 'earth')[0][0:3] * 1000.0
 
+        # Get planet-centered inertial state
         self.eci = spice.spkez(loader.object_id, time, 'J2000', 'NONE', 399)[0] * 1000.0
         self.lci = spice.spkez(loader.object_id, time, 'J2000', 'NONE', 301)[0] * 1000.0
 
-        self.T_inrtl_to_body = np.identity(3) # FIXME: Add attitude, eventually
+        if command: # use the user-specified attitude command in the YML
+            self.T_inrtl_to_body = self.command.T_inrtl_to_body(self)
+        else: # no attitude commanded, use identity
+            self.T_inrtl_to_body = np.identity(3)
+        
+        self.T_inrtl_to_lclf = spice.sxform('J2000', 'MOON_ME', time)
+        self.T_inrtl_to_ecef = spice.sxform('J2000', 'ITRF93', time)
+        self.T_lclf_to_body  = self.T_inrtl_to_body.dot(self.T_inrtl_to_lclf[0:3,0:3].T)
+        self.T_ecef_to_body  = self.T_inrtl_to_body.dot(self.T_inrtl_to_ecef[0:3,0:3].T)
+
+        # Get planet-fixed state
+        self.ecef = self.T_inrtl_to_ecef.dot(self.eci)
+        self.lclf = self.T_inrtl_to_lclf.dot(self.lci)
 
         # FIXME: Need measurements here
         self.a_meas_inrtl = np.zeros(3)
@@ -53,8 +67,8 @@ class State(object):
         self.d_moon  = norm(self.lci[0:3])
 
         # Get angular size of each
-        self.earth_angle = 2 * np.arctan(self.loader.r_earth[2] * 1000.0 / self.d_earth)
-        self.moon_angle  = 2 * np.arctan(self.loader.r_moon[2] * 1000.0 / self.d_moon)
+        self.earth_angle = 2 * np.arctan(self.loader.r_earth * 1000.0 / self.d_earth)
+        self.moon_angle  = 2 * np.arctan(self.loader.r_moon * 1000.0 / self.d_moon)
         
         self.earth_phase_angle = sun_spacecraft_angle('earth', time, loader.object_id)
         self.moon_phase_angle  = sun_spacecraft_angle('moon', time, loader.object_id)
@@ -79,9 +93,9 @@ class State(object):
         self.elevation_from = {}
         self.visible_from = []
         self.r_station_inrtl = {}
-        for ground_name in self.ground_stations:
+        for ground_name in self.r_station_ecef:
             obj_str = str(self.loader.object_id)
-            moon_occult_code = spice.occult(obj_str, 'point', ' ', 'moon', 'ellipsoid', 'MOON_ME', 'NONE', str(self.ground_stations[ground_name]), time)
+            moon_occult_code = spice.occult(obj_str, 'point', ' ', 'moon', 'ellipsoid', 'MOON_ME', 'NONE', str(self.params.ground_stations[ground_name]), time)
 
             elevation = float('nan')
             if moon_occult_code >= 0:
@@ -110,8 +124,24 @@ class State(object):
         return self.loader.T_body_to_att
 
     @property
-    def T_body_to_cam(self):
-        return self.loader.T_body_to_cam
+    def T_body_to_horizon_cam(self):
+        return self.loader.T_body_to_horizon_cam
+
+    @property
+    def T_body_to_trn_cam(self):
+        return self.loader.T_body_to_trn_cam
+
+    @property
+    def T_body_to_hrn_cam(self):
+        return self.loader.T_body_to_hrn_cam
+
+    @property
+    def T_body_to_alt(self):
+        return self.loader.T_body_to_alt
+
+    @property
+    def T_body_to_vel(self):
+        return self.loader.T_body_to_vel
 
     def range(self, rel):
         if rel == 'earth':

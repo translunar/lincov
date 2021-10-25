@@ -16,15 +16,17 @@ if __name__ == '__main__':
         raise SyntaxError("expected run name")
 
     label = sys.argv[1]
-    loader = SpiceLoader('spacecraft')
+    mission = sys.argv[2]
+    object_id = int(sys.argv[3])
+    loader = SpiceLoader(mission, id = object_id)
 
-    if len(sys.argv) > 2:
-        copy_from = sys.argv[2]
+    if len(sys.argv) > 4:
+        copy_from = sys.argv[4]
     else:
         copy_from = 'f9'
 
-    if len(sys.argv) > 3:
-        snapshot_label = sys.argv[3]
+    if len(sys.argv) > 5:
+        snapshot_label = sys.argv[5]
     else:
         snapshot_label = 'init'
 
