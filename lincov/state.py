@@ -1,4 +1,5 @@
 from spiceypy import spiceypy as spice
+import spiceypy.utils.exceptions as spexc
 
 import numpy as np
 from scipy.linalg import norm
@@ -20,10 +21,6 @@ def sun_spacecraft_angle(body, time, object_id):
 
 class State(object):
     """State information for the linear covariance analysis"""
-
-    #ground_stations = { 'DSS-24': 399024,
-    #                    'DSS-34': 399034,
-    #                    'DSS-54': 399054 }
 
     r_station_ecef = {}
     
@@ -75,17 +72,22 @@ class State(object):
 
         # We need to be able to clearly see the planet in order to do
         # horizon detection.
-        planet_occult_code = spice.occult('earth', 'ellipsoid', 'ITRF93', 'moon', 'ellipsoid', 'MOON_ME', 'NONE', str(loader.object_id), time)
+        try:
+            planet_occult_code = spice.occult('earth', 'ellipsoid', 'ITRF93', 'moon', 'ellipsoid', 'MOON_ME', 'NONE', str(loader.object_id), time)
+        except spexc.SpiceNOTDISJOINT:
+            planet_occult_code = None
+            moon_occult_code = None
 
         self.horizon_moon_enabled = False
         self.horizon_earth_enabled = False
         
         if planet_occult_code == 0:
-            if self.earth_angle < self.params.horizon_fov and self.earth_phase_angle < self.params.horizon_max_phase_angle:
-                self.horizon_earth_enabled = True
+            if 'horizon_fov' in self.params:
+                if self.earth_angle < self.params.horizon_fov and self.earth_phase_angle < self.params.horizon_max_phase_angle:
+                    self.horizon_earth_enabled = True
             
-            if self.moon_angle < self.params.horizon_fov and self.moon_phase_angle < self.params.horizon_max_phase_angle:
-                self.horizon_moon_enabled = True
+                if self.moon_angle < self.params.horizon_fov and self.moon_phase_angle < self.params.horizon_max_phase_angle:
+                    self.horizon_moon_enabled = True
         else:
             self.earth_angle = 0.0
             self.moon_angle  = 0.0
@@ -95,10 +97,14 @@ class State(object):
         self.r_station_inrtl = {}
         for ground_name in self.r_station_ecef:
             obj_str = str(self.loader.object_id)
-            moon_occult_code = spice.occult(obj_str, 'point', ' ', 'moon', 'ellipsoid', 'MOON_ME', 'NONE', str(self.params.ground_stations[ground_name]), time)
+
+            try:
+                moon_occult_code = spice.occult(obj_str, 'point', ' ', 'moon', 'ellipsoid', 'MOON_ME', 'NONE', str(self.params.ground_stations[ground_name]), time)
+            except spexc.SpiceNOTDISJOINT:
+                pass # Already handled
 
             elevation = float('nan')
-            if moon_occult_code >= 0:
+            if moon_occult_code is not None and moon_occult_code >= 0:
                 # get spacecraft elevation
                 x, lt = spice.spkcpo(obj_str, time, ground_name + '_TOPO', 'OBSERVER', 'NONE', self.r_station_ecef[ground_name] / 1000.0, 'earth', 'ITRF93')
                 r, lon, lat = spice.reclat(x[0:3])

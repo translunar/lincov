@@ -139,15 +139,17 @@ class YamlLoader(object):
         # because there are computations in State which happen
         # regardless of the measurement types that depend on these
         # parameters. State does not have access to the meas_dt dict.
-        if 'horizon_fov' not in self.params:
-            print("Setting default: horizon_fov = 0")
-            self.params.horizon_fov = 0.0
-        if 'horizon_max_phase_angle' not in self.params:
-            print("Setting default: horizon_max_phase_angle = 0")
-            self.params.horizon_max_phase_angle = 0.0
-        if 'radiometric_min_elevation' not in self.params:
-            print("Setting default: radiometric_min_elevation_deg = 90")
-            self.params.radiometric_min_elevation = np.pi * 0.5 # 90 degrees
+        if 'horizon_earth' in self.meas_dt or 'horizon_moon' in self.meas_dt:
+            if 'horizon_fov' not in self.params:
+                print("Setting default: horizon_fov = 0")
+                self.params.horizon_fov = 0.0
+            if 'horizon_max_phase_angle' not in self.params:
+                print("Setting default: horizon_max_phase_angle = 0")
+                self.params.horizon_max_phase_angle = 0.0
+        if 'twoway_range' in self.meas_dt or 'twoway_doppler' in self.meas_dt:
+            if 'radiometric_min_elevation' not in self.params:
+                print("Setting default: radiometric_min_elevation_deg = 90")
+                self.params.radiometric_min_elevation = np.pi * 0.5 # 90 degrees
                 
     def as_metadata(self):
         metadata              = self.yaml

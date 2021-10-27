@@ -26,7 +26,7 @@ from plot import plot_inrtl, plot_lvlh, plot_environment, plot_R
 def print_usage():
     print("Plot a single entry from each block (and first and last from the final block) to summarize a dataset.")
     print("")
-    print("usage: {} config dataset [first [last]]".format(sys.argv[0]))
+    print("usage: {} config mission id dataset [first [last]]".format(sys.argv[0]))
     print("  options:")
     print("    config refers to the configuration YAML file (without .yml extension)")
     print("    dataset is one of state_sigma, environment, or any measurement type")
@@ -39,22 +39,24 @@ def print_usage():
 
 if __name__ == '__main__':
 
-    if len(sys.argv) < 2 or sys.argv[1] in ('-h', '--help'):
+    if len(sys.argv) < 3 or sys.argv[1] in ('-h', '--help'):
         print_usage()
 
     label = sys.argv[1]
-    name  = sys.argv[2]
+    mission = sys.argv[2]
+    object_id = int(sys.argv[3])
+    name  = sys.argv[4]
     
     config = YamlLoader(label)
-    loader = SpiceLoader('spacecraft')
+    loader = SpiceLoader(mission, id = object_id)
     
-    if len(sys.argv) > 3:
+    if len(sys.argv) > 5:
         first_time = float(sys.argv[3])
         first      = find_block(first_time, config.block_dt)
     else:
-        first      = 1
+        first      = 10
 
-    if len(sys.argv) > 4:
+    if len(sys.argv) > 6:
         last_time = float(sys.argv[4])
         last      = find_block(last_time, config.block_dt)
     else:

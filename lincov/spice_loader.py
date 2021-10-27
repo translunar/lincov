@@ -7,14 +7,19 @@ import os
 
 class SpiceLoader(object):
 
-    def __init__(self, mission = None, dir = 'kernels/', id = -5440):
+    def __init__(self, mission = None, dir = 'kernels/', id = None):
         self.dir        = dir
         self.object_id  = id
+        if id is None:
+            import pdb
+            pdb.set_trace()
+            raise ValueError("expected NAIF object id, got None")
 
         names = ['de432s.bsp', 'pck00010.tpc', 'naif0012.tls',
                  'moon_pa_de421_1900-2050.bpc', 'moon_080317.tf',
                  'moon_fixed_me.tf', 'gm_de431.tpc', 'earth_070425_370426_predict.bpc',
-                 'earthstns_itrf93_050714.bsp', 'earth_topo_050714.tf']
+                 'earthstns_itrf93_050714.bsp', 'ndosl_190716_v02.bsp', 
+                 'ndosl_190716_v02.tf', 'earth_topo_050714.tf']
         if mission is not None:
             names.append(mission + '.bsp')
             self.mission = mission
@@ -68,7 +73,7 @@ class SpiceLoader(object):
             raise NotImplemented("body {} not pre-loaded".format(body))
 
     @classmethod
-    def spk_coverage(self, path, id = -5440):
+    def spk_coverage(self, path, id = None):
         """Get start and end ephemeris times for a SPK file."""
         coverage = stypes.SPICEDOUBLE_CELL(2)
         spice.spkcov(path, id, coverage)
@@ -79,3 +84,17 @@ class SpiceLoader(object):
         if id is None:
             id = self.object_id
         return SpiceLoader.spk_coverage(self.dir + self.mission + '.bsp', id)
+
+    def find_count(self, et, block_dt):
+        """Given some ephemeris time, what index number should we look in to
+        find it?
+        
+        Args:
+            et:         ephemeris time in seconds
+            block_dt:   length of time in a block (comes from a config in YamlLoader)
+            
+        Returns:
+            A file index (integer).
+        """
+        count = int(np.floor((et - self.start) / block_dt)) - 1
+        return count

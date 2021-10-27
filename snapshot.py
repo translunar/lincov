@@ -14,7 +14,7 @@ Probably you want to do something like this:
 which will start the analysis named 'my_lincov' from an analysis named
 'f9' that has a snapshot called 'init'. When that's finished,
 
-  ./snapshot.py my_lincov 360021.0 loi
+  ./snapshot.py my_lincov 360021.0 loi mission -5400
 
 to create a snapshot of the covariance at LOI.
 
@@ -44,10 +44,12 @@ if __name__ == '__main__':
     label                = sys.argv[1]
     mission_elapsed_time = float(sys.argv[2])
     snapshot_label       = sys.argv[3]
+    mission              = sys.argv[4]
+    object_id            = int(sys.argv[5])
 
     config = YamlLoader(label)
     count  = find_block(mission_elapsed_time, config.block_dt) - 1
-    loader = SpiceLoader('spacecraft')
+    loader = SpiceLoader(mission, id = object_id)
 
     l = LinCov.start_from(loader, label, count)
     while not l.finished:

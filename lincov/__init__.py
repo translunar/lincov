@@ -212,7 +212,7 @@ class LinCov(object):
         H = np.zeros((len(x.visible_from), self.N))
         R = np.zeros((len(x.visible_from), len(x.visible_from)))
         for ii, name in enumerate(x.visible_from):
-            ground_id = x.ground_stations[name]
+            ground_id = x.params.ground_stations[name]
             # Need times so we can get positions of ground stations slightly earlier
             t1, tau12 = spice.ltime(x.time, x.loader.object_id, "<-", ground_id)
             t3, tau23 = spice.ltime(x.time, x.loader.object_id, "->", ground_id)
@@ -254,7 +254,7 @@ class LinCov(object):
         H = np.zeros((len(x.visible_from), self.N))
         R = np.zeros((len(x.visible_from), len(x.visible_from)))
         for ii, name in enumerate(x.visible_from):
-            ground_id = x.ground_stations[name]
+            ground_id = x.params.ground_stations[name]
 
             # Get locations of ground stations at t1 and t3
             t1, tau12 = spice.ltime(x.time, x.loader.object_id, "<-", ground_id)
@@ -529,7 +529,7 @@ class LinCov(object):
         # If we were given a snapshot label, we need to determine
         # which count it falls in the middle of.
         if snapshot_label and count is None:
-            count      = int(math.floor((time - loader.start) / config.block_dt)) - 1
+            count      = loader.find_count(time, config.block_dt)
             block_dt   = (count + 2) * config.block_dt + loader.start - time
             if count < 0: count = 0
         
@@ -615,9 +615,8 @@ class LinCov(object):
         range_earth       = []
         range_moon        = []
         station_elevations = {}
-        for station in State.ground_stations:
+        for station in self.params.ground_stations:
             station_elevations[station] = []
-        
 
         self.time += dt
 
@@ -657,7 +656,7 @@ class LinCov(object):
             range_earth.append( self.x.range_earth )
             range_moon.append( self.x.range_moon )
             
-            for station in State.ground_stations:
+            for station in self.params.ground_stations:
                 station_elevations[station].append( self.x.elevation_from[station] )
 
             yield self, 'propagate'

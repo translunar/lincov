@@ -3,7 +3,7 @@
 NDOSL Station Locations SPK File
 =========================================================================
  
-   Fri Nov  7 08:54:11 PST 2014 -- BVS/NAIF
+   Wed Nov 27 08:40:51 PST 2019 -- BVS/NAIF
  
  
 Abstract
@@ -48,7 +48,7 @@ Station and Frame Names and IDs
 References
 =======================================================
  
-   [1] NASA DIRECTORY OF STATION LOCATIONS (NDOSL), May 30, 2014
+   [1] NASA DIRECTORY OF STATION LOCATIONS (NDOSL), July 16, 2019
  
  
  
@@ -96,10 +96,10 @@ Table 2: GEODETIC POSITIONS ON WORLD GEODETIC SYSTEM 1984
    ANTQ  4087   17 08 37.1440  298 12 26.9550     3.630
    APLS  1725   39 10 02.6400  283 54 00.0000   146.510
    AS2Q  4765   -7 58 22.1025  345 35 56.5769   143.500
-   AS2S  1743   64 51 34.0594  212 09 00.9276   467.804
-   AS3S  1744   64 51 31.9514  212 08 45.1856   430.536
+   AS2S  1743   64 51 34.0589  212 09 00.9156   237.770
+   AS3S  1744   64 51 31.9514  212 08 45.1856   220.217
    ASCQ  4045   -7 54 23.8867  345 35 51.0000    56.000
-   ASFS  1720   64 51 31.3637  212 08 32.6574   425.094
+   ASFS  1720   64 51 31.3637  212 08 32.6574   217.497
    ASNS  1726   -7 55 00.0018  345 40 00.0000    23.004
    ATDQ  4862   33 55 51.1830  275 53 28.9322   282.637
    ATDS  4862   33 55 51.1830  275 53 28.9322   282.637
@@ -109,6 +109,7 @@ Table 2: GEODETIC POSITIONS ON WORLD GEODETIC SYSTEM 1984
    AUSS  4259   43 25 43.3056    1 29 57.8832   260.479
    AUWS  1902  -29 02 44.7651  115 20 55.2050   250.600
    BANF  4020   13 01 48.0000   77 30 36.0000   838.000
+   BD1S  4056   32 21 03.7581  295 20 28.1724   -12.420
    BDA3  1303   32 21 04.5631  295 20 31.6020   -11.380  (deactivated)
    BDAA  1360   32 21 04.1494  295 20 28.3574    -7.323  (deactivated)
    BDAQ  4760   32 20 52.5955  295 20 47.5819    -9.880  (deactivated)
@@ -117,7 +118,11 @@ Table 2: GEODETIC POSITIONS ON WORLD GEODETIC SYSTEM 1984
    BLT3  1915   38 59 54.4110  283 09 26.0397    18.333  (deactivated)
    BLTA  1316   38 59 53.6910  283 09 29.0198    24.834
    BLTD  1315   38 59 54.4110  283 09 26.0397    18.333  (deactivated)
-   BLTJ  0290   39 00 09.7327  283 09 43.4598    60.060
+   BLTJ  0290   39 00 09.7327  283 09 43.4598    13.660
+   BP1K  4754   38 25 44.9947  282 54 57.8069   -15.734
+   BP1S  1322   38 25 44.9947  282 54 57.8069   -15.734
+   BP2K  4755   38 25 43.6110  282 54 57.8083   -15.743
+   BP2S  1323   38 25 43.6110  282 54 57.8083   -15.743
    BREQ  4283    4 56 55.9641  307 41 25.6406    51.960
    BRKS  1732   37 52 45.7557  237 45 25.9783   357.034
    CA2F  4241   34 34 58.9020  239 26 19.9864   627.550
@@ -137,6 +142,7 @@ Table 2: GEODETIC POSITIONS ON WORLD GEODETIC SYSTEM 1984
    CTVJ  0293   32 30 01.7716  253 23 29.1941  1450.172
    D26D  1526   35 20 08.4812  243 07 37.1406   968.686
    D27D  1516   35 14 17.7784  243 13 24.0584  1052.468
+   D36D  1536  -35 23 42.3663  148 58 42.7591   685.503
    DAKS  4072   14 43 29.1440  342 52 16.4392    91.278
    DFRS  4067   34 56 59.2467  242 06 45.3814   679.907
    DGIS  4073   -7 16 12.1100   72 22 11.9950   -68.375
@@ -148,6 +154,7 @@ Table 2: GEODETIC POSITIONS ON WORLD GEODETIC SYSTEM 1984
    DS24  4252   35 20 23.6142  243 07 30.7401   951.499
    DS25  1525   35 20 15.4031  243 07 28.6925   959.634
    DS34  1534  -35 23 54.5238  148 58 55.0719   692.020
+   DS35  1535  -35 23 44.8639  148 58 53.2409   694.889
    DS42  1547  -35 24 02.4619  148 58 52.4791   684.755
    DS43  1548  -35 24 08.7272  148 58 52.5623   688.867
    DS45  1549  -35 23 54.4477  148 58 39.6683   674.347
@@ -159,7 +166,7 @@ Table 2: GEODETIC POSITIONS ON WORLD GEODETIC SYSTEM 1984
    DS65  1565   40 25 37.9429  355 44 57.4840   833.854
    DS66  1566   40 25 47.9095  355 44 54.8965   849.874
    DS87  1587   37 55 35.7235  284 31 25.3037   -12.762
-   DX2S  1715   65 07 04.2020  212 34 07.8150   514.650
+   DX2S  1715   65 07 04.2020  212 34 07.8150   514.650  (deactivated)
    DXAS  1711   65 07 04.5470  212 33 59.3860   518.900
    EA2F  4065   34 58 13.6340  242 04 09.9780   799.726
    EA3F  4221   34 56 17.2116  241 54 31.2131   743.537
@@ -170,7 +177,9 @@ Table 2: GEODETIC POSITIONS ON WORLD GEODETIC SYSTEM 1984
    ET2S  1974   32 30 15.7842  253 23 19.8316  1463.649
    EULY  4205   28 27 48.8307  279 20 49.1561   -10.510
    EVCS  1363   28 29 09.6000  279 25 26.4000    14.996
+   FR1X  1844   34 57 02.5000  242 06 16.4000   717.000
    FR2F  4249   34 57 01.6062  242 06 17.1228   723.967
+   FR2X  1845   34 57 02.6000  242 06 17.0000   717.000
    FRCF  4069   34 57 38.8969  242 05 18.6141   751.842
    FT2F  4138   31 33 24.3607  249 33 42.5760  1794.960
    FTHF  4115   31 34 15.6873  249 37 45.1273  1486.316
@@ -192,6 +201,7 @@ Table 2: GEODETIC POSITIONS ON WORLD GEODETIC SYSTEM 1984
    GW2K  1968   13 35 15.3178  144 50 27.1481   197.665
    GW2S  1969   13 35 15.3178  144 50 27.1481   197.665
    GW3S  1970   13 35 14.3146  144 50 27.1498   197.738
+   GWE2  1936   13 35 12.3230  144 50 26.8951   191.148
    GWM3  1309   13 18 38.4820  144 44 12.5351   148.640
    GWMK  1965   13 35 16.8643  144 50 27.3462   192.610
    GWMS  1966   13 35 16.8643  144 50 27.3462   192.610
@@ -206,6 +216,7 @@ Table 2: GEODETIC POSITIONS ON WORLD GEODETIC SYSTEM 1984
    HOLF  4144   32 54 05.2699  253 54 02.9896  1241.500
    HR1S  1718   37 56 43.7970  284 32 19.9120   -18.510
    HR2S  1719   37 56 43.5330  284 32 16.4760   -17.430
+   HR3S  1749   39 00 02.1700  283 09 30.8220   -30.420
    HT2S  1373   21 34 08.2985  201 44 15.7962   319.658
    HTSS  1367   21 33 44.1799  201 45 28.4776   430.423
    HWIS  1903   19 00 50.0562  204 20 12.1155   367.200
@@ -236,6 +247,7 @@ Table 2: GEODETIC POSITIONS ON WORLD GEODETIC SYSTEM 1984
    KU1S  1905   67 53 22.4100   21 03 56.3570   400.400
    KU2S  1906   67 52 59.4570   21 03 37.6140   428.200
    KU3S  1909   67 52 44.6550   21 02 16.8000   527.000
+   KUSS  4055   28 32 31.4337  279 21 25.3715     9.830
    LANS  1728   48 45 05.0953  356 31 48.0000   110.676
    LBVS  4250    0 21 16.6672    9 40 31.0810   111.269
    LE1S  1721   65 07 00.6660  212 32 15.8820   414.000
@@ -262,7 +274,7 @@ Table 2: GEODETIC POSITIONS ON WORLD GEODETIC SYSTEM 1984
    OTSS  1364   51 06 50.8224  359 06 18.3706   -18.852
    PA2Q  4089   28 13 38.3814  279 23 38.0465   -14.380
    PATQ  4060   28 13 35.0487  279 24 02.6051   -13.760
-   PDLS  4054   29 03 59.9342  279 05 13.1231   -22.690
+   PDLS  4054   29 03 59.9308  279 05 13.1163     9.845
    PFTQ  4864   65 07 00.4551  212 32 12.1530   413.284
    PFTS  4864   65 07 00.4551  212 32 12.1530   413.284
    PIOD  1511   35 23 22.2658  243 09 02.2426  1004.213  (deactivated)
@@ -286,6 +298,7 @@ Table 2: GEODETIC POSITIONS ON WORLD GEODETIC SYSTEM 1984
    SG1S  1702   78 13 50.7601   15 23 22.3213   500.280
    SG3S  1733   78 13 47.0460   15 24 29.1450   501.378
    SG4S  1723   78 13 40.8828   15 24 34.8020   508.591
+   SG6S  1750   78 13 50.8872   15 25 02.2368   446.184
    SI1S  1742    1 23 30.9048  103 50 06.0000    30.000
    SIPQ  4003   15 14 56.9250  145 47 46.3800   348.200
    SN2F  4443   33 14 51.6660  240 28 45.3259   246.680
@@ -295,6 +308,8 @@ Table 2: GEODETIC POSITIONS ON WORLD GEODETIC SYSTEM 1984
    ST1F  4224   18 21 26.1120  295 01 36.4207   130.454
    ST2K  4751   32 32 34.7185  253 23 16.4798  1452.310
    ST3K  4752   32 32 33.6300  253 23 16.4800  1452.300
+   STE1  1934   32 32 36.8675  253 23 16.7377  1447.810
+   STE2  1935   32 32 32.1914  253 23 16.6621  1446.320
    STGK  4750   32 32 35.8065  253 23 16.4798  1452.280
    STGS  4753   32 32 32.8260  253 23 16.4798  1449.460
    STSS  1741   32 32 30.1803  253 23 16.4434  1456.090
@@ -304,12 +319,17 @@ Table 2: GEODETIC POSITIONS ON WORLD GEODETIC SYSTEM 1984
    TH2S  1731   76 30 55.3100  291 24 04.2670   147.370
    THUS  1730   76 30 58.6550  291 24 03.5360   141.160
    TR2S  1738  -72 00 07.9994    2 31 26.8456  1416.582
+   TR3S  1748  -72 00 07.7295    2 31 30.0423  1409.348
    TSMF  4080  -42 48 18.0000  147 26 20.4000    43.000
    TT2S  1376   76 30 55.3119  291 24 04.1101   146.985
    TTSS  1369   76 30 57.3644  291 24 00.0998   135.906
    TULF  4151   33 05 46.1815  253 50 27.0450  1241.254
    TULS  4078   33 01 37.0016  253 51 39.2724  1328.633  (deactivated)
    U2HS  1779   19 00 49.6564  204 20 13.4013   382.300
+   U2PS  1771  -29 02 44.5000  115 20 56.5000   249.700
+   U3AS  1745   64 48 15.9037  212 29 53.2252   157.900
+   U4AS  1746   64 48 16.9923  212 29 44.8351   157.200
+   U5AS  1747   64 48 12.2906  212 29 57.8607   160.300
    UL1S  1854   64 58 21.9000  212 29 56.0400   447.300
    UL23  1371   64 58 20.6656  212 28 54.9636   331.108
    UL33  1332   64 58 36.5300  212 28 54.9618   308.056
@@ -345,7 +365,6 @@ Table 2: GEODETIC POSITIONS ON WORLD GEODETIC SYSTEM 1984
    WHSJ  0201   32 30 22.6133  253 23 16.9233  1442.610
    WHSK  1920   32 30 03.6434  253 23 29.2138  1459.730
    WHSS  1961   32 30 00.9712  253 23 29.2132  1452.260
-   WHSX  1842   32 30 03.3890  253 23 31.1385  1477.061
    WL2F  4841   37 56 38.7569  284 32 08.7959   -14.040
    WL2S  4206   37 56 47.1469  284 32 16.5917    -6.765
    WL3F  4845   37 51 22.9149  284 29 18.8327   -18.126
@@ -360,13 +379,15 @@ Table 2: GEODETIC POSITIONS ON WORLD GEODETIC SYSTEM 1984
    WP2Y  1838   37 55 32.1066  284 31 23.3133   -15.234
    WP2Z  1840   37 55 44.0844  284 31 34.4959   -17.846
    WP3S  1338   37 55 42.1002  284 31 32.9233   -19.631
-   WP3Z  1841   37 55 25.0724  284 31 20.8976    -2.928
+   WP3Z  1841   37 55 25.0724  284 31 20.8976   -20.388
    WPDA  1339   37 55 38.5427  284 31 30.1701   -10.538
    WPS8  1336   37 55 38.4925  284 31 27.0005   -20.647
    WPSA  1334   37 55 38.1996  284 31 30.0511   -19.736
    WPSS  1335   37 55 35.7235  284 31 25.3037   -12.762
    WS1S  1931   32 32 26.7178  253 23 16.4417  1456.545
    WSCZ  1871   32 30 17.0000  253 23 21.0000  1470.660
+   WSE1  1932   32 30 04.9446  253 23 29.5598  1449.630
+   WSE2  1933   32 30 04.9446  253 23 29.2463  1457.860
    WSSH  1870   32 52 49.0000  253 32 07.0000  1198.474
    WT1S  4865   65 07 02.0529  212 32 27.3830   431.444
    WT2S  4866   65 07 00.2397  212 32 18.4247   430.342
@@ -408,7 +429,7 @@ Table 3: STATION LOCATION AND EQUIPMENT
    ANTQ  4087  Antigua; C-bd FPQ-14 8.8m az-el on-axis
    APLS  1725  APL, Clarksville, MD; S/X-band, X-Y, 18m
    AS2Q  4765  Ascension Island; C-bd TPQ-11 8.8m, az-el
-   AS2S  1743  Alaska Satellite Facility Univ. of Alas Fairbank; S-band az-el 10 meter
+   AS2S  1743  Alaska Satellite Facility Univ. of Alas Fairbank; USB S-bnd, X-bnd az-el 9.1m
    AS3S  1744  Alaska Satellite Facility Univ. of Alas Fairbank; S-band az-el 11 meter
    ASCQ  4045  Ascension Island; C-bd FPQ-15 8.5m az-el on-axis
    ASFS  1720  Alaska Satellite Facility Univ. of Alas Fairbank; S-band az-el 11 meter
@@ -421,6 +442,7 @@ Table 3: STATION LOCATION AND EQUIPMENT
    AUSS  4259  Aussaguel, France; S-bd az-el 11m
    AUWS  1902  Dongara,WA Australia; S-band, 13m az-el
    BANF  4020  Bangalore; C-bd az-el
+   BD1S  4056  NEN Bermuda; USB, S-band, Az-El, 7m
    BDA3  1303  (deactivated) Bermuda; USB 9m X-Y n-s
    BDAA  1360  (deactivated) Bermuda; USB 9m X-Y e-w
    BDAQ  4760  (deactivated) Bermuda; C-bd FPQ-6 8.8m az-el
@@ -430,6 +452,10 @@ Table 3: STATION LOCATION AND EQUIPMENT
    BLTA  1316  Greenbelt, MD; USB 9m X-Y e-w
    BLTD  1315  (deactivated) Greenbelt, MD; USB 9m X-Y n-s K-bd rcvr
    BLTJ  0290  Greenbelt, MD; BRT 3-ft manual az-el
+   BP1K  4754  Blossom Point Ground Terminal North Antenna; TDRSS K-bd AZ-EL 20m
+   BP1S  1322  Blossom Point Ground Terminal North Antenna; TT&C S-bd AZ-EL 20m
+   BP2K  4755  Blossom Point Ground Terminal South Antenna; TDRSS K-bd AZ-EL 20m
+   BP2S  1323  Blossom Point Ground Terminal South Antenna; TT&C S-bd AZ-EL 20m
    BREQ  4283  Kourou, Fr Guiana; C-bd
    BRKS  1732  Berkeley, CA; S-bd 11m az-el
    CA2F  4241  Tranquillon Peak, CA; C-bd FPS-16 3.7m az-el SN 18
@@ -449,6 +475,7 @@ Table 3: STATION LOCATION AND EQUIPMENT
    CTVJ  0293  White Sands, NM; BRT CTV
    D26D  1526  Goldstone, CA; DSN, 34m BWG
    D27D  1516  Goldstone, CA; DSN, 34m HSB
+   D36D  1536  DSN DSS Canberra, Australia; DSN USB 34m BWG, S-bd, AZ-EL
    DAKS  4072  Dakar, Senegal; Tlm S-bd 4.3m az-el
    DFRS  4067  Dryden FRC, CA; S-bd and L-bd 4.3m az-el
    DGIS  4073  Diego Garcia Island; S-bd 10m az-el
@@ -460,6 +487,7 @@ Table 3: STATION LOCATION AND EQUIPMENT
    DS24  4252  Goldstone, CA; DSN 34m BWG
    DS25  1525  Goldstone, CA; DSN 34m BWG
    DS34  1534  Canberra, Australia; DSN 34m BWG
+   DS35  1535  DSN Canberra, Australia; DSN 34m BWG, S-bd, AZ-EL
    DS42  1547  Canberra, Aust; USB-DSN 34m HA-DEC
    DS43  1548  Canberra, Australia; DSN 70m
    DS45  1549  Canberra, Australia; DSN 34m HEF
@@ -471,7 +499,7 @@ Table 3: STATION LOCATION AND EQUIPMENT
    DS65  1565  Madrid Spain; USB-DSN 34m HEF
    DS66  1566  Madrid Spain; USB-DSN 26m X-Y
    DS87  1587  Wallops Island, VA; S-bd 18m az-el ADAS receive only
-   DX2S  1715  Poker Flat, Alaska; S-bd, 7.3 meter, az-el
+   DX2S  1715  (deactivated) Poker Flat, Alaska; S-bd, 7.3 meter, az-el
    DXAS  1711  Poker Flat, Alaska; S-bd, 11 meter, az-el
    EA2F  4065  Edwards AFB, CA; C-bd FPS-16 3.7m az-el R-41
    EA3F  4221  Edwards AFB, CA; TACAN C-bd mobile
@@ -482,7 +510,9 @@ Table 3: STATION LOCATION AND EQUIPMENT
    ET2S  1974  White Sands, NM; Az-El, S-bd, 9m
    EULY  4205  Merritt Island, FL; Tlm S-bd 10.1m az-el
    EVCS  1363  Cape Canaveral,Fl.; Tlm S-bd 9m, az-el
+   FR1X  1844  Armstrong Flight Research Center; VHF, Az-El
    FR2F  4249  Armstrong Flight Research Center; C-bd FPS-16 3.7m az-el
+   FR2X  1845  Armstrong Flight Research Center; VHF, Az-El
    FRCF  4069  Edwards AFB, CA; C-bd FPS-16V 4.9m az-el R-34
    FT2F  4138  Fort.Huachuca, AZ; C-bd FPS-16 3.7m az-el
    FTHF  4115  Fort.Huachuca, AZ; C-bd FPS-16 3.7m az-el
@@ -504,20 +534,22 @@ Table 3: STATION LOCATION AND EQUIPMENT
    GW2K  1968  Guam; S-bd, 16 meters az-el
    GW2S  1969  Guam; S-bd, 16 meters az-el
    GW3S  1970  Guam; Ku-bd, S-bd, 16 meters az-el
+   GWE2  1936  GRGT, Guam; 5m Ku/S-bd,az-el,G-EET-2
    GWM3  1309  Guam; USB 9m X-Y n-s
    GWMK  1965  Guam; S-bd 11-meter K-bd az-el
    GWMS  1966  Guam; S-bd 11-meter az-el TT&C
    HAW3  1311  Kauai, HI; USB 9m X-Y n-s
    HAWQ  4285  Hawaii, Univ.; C-bd az-el TLM
    HAWS  1706  South Point, Hawaii; S-bd telemetry, command
-   HB33  1325  Hartbeehoek., S. Africa; S-bd 12m x-y (n/s)
-   HB4S  1378  Hartbeehoek, S. Africa; S-band 6 m
-   HB5S  1403  Hartbeehoek, S. Africa; S-band 10 m
-   HBK3  1324  Hartbeehoek., S. Africa; S-bd 9m x-y (n/s)
-   HBKS  1402  Hartebeeshoek, S. Africa; S-bd x-y 12m
+   HB33  1325  Hartebeesthoek, S. Africa; S-bd 12m x-y (n/s)
+   HB4S  1378  Hartebeesthoek, S. Africa; S-band 6 m
+   HB5S  1403  Hartebeesthoek, S. Africa; S-band 10 m
+   HBK3  1324  Hartebeesthoek, S. Africa; S-bd 9m x-y (n/s)
+   HBKS  1402  Hartebeesthoek, S. Africa; S-bd x-y 12m
    HOLF  4144  Holloman AFB, NM; C-bd FPS-16 3.7m az-el
    HR1S  1718  Wallops, VA; S-bd, 16.4 meter, az-el
    HR2S  1719  Wallops, VA; S-bd, 16.4 meter, az-el
+   HR3S  1749  Greenbelt, MD; USB S-bd, 16.4m, az-el
    HT2S  1373  Kaena Point, HI; Tlm-SGLS S-bd 46-ft az-el
    HTSS  1367  Kaena Point, HI; Tlm-SGLS S-bd 60-ft az-el
    HWIS  1903  South Point, HI; S-band az-el, 13m
@@ -548,6 +580,7 @@ Table 3: STATION LOCATION AND EQUIPMENT
    KU1S  1905  Kiruna, Sweden; S & X band
    KU2S  1906  Kiruna, Sweden; S & X band
    KU3S  1909  Kiruna, Sweden; az-el, 13 meter, S-bd
+   KUSS  4055  NEN Kennedy Uplink Station 6.1m; USB 6.1m, S-bd, Az-El
    LANS  1728  Lannion, France; S-bd az-el
    LBVS  4250  Liberville, Africa; S-bd 10m az-el
    LE1S  1721  Poker Flat, AK; S-bd, 5 meter, az-el
@@ -574,7 +607,7 @@ Table 3: STATION LOCATION AND EQUIPMENT
    OTSS  1364  Oakhanger, UK; Tlm-SGLS S-bd 60-ft az-el
    PA2Q  4089  Patrick AFB, FL; C-bd FPQ-13 6.1m az-el on-axis
    PATQ  4060  Patrick AFB, FL; C-bd FPQ-14 8.8m az-el on-axis
-   PDLS  4054  Ponce de Leon Inlet, FL; Tlm S-bd 4.0m az-el c&v
+   PDLS  4054  NEN Ponce De Leon 6.1m; USB 6.1m, S-bd, Az-El
    PFTQ  4864  Poker Flat, Ak.; S-bd
    PFTS  4864  Poker Flat, Ak.; S-bd
    PIOD  1511  (deactivated) Goldstone, CA; DSS 11 26m HA-Dec Pioneer
@@ -598,6 +631,7 @@ Table 3: STATION LOCATION AND EQUIPMENT
    SG1S  1702  Svalbard, Norway; S-band, Az-El, 11m
    SG3S  1733  Svalbard, Norway; S-band az-el 13.6 meters
    SG4S  1723  Svalbard, Norway; S-band
+   SG6S  1750  KSat Svalbard, Norway; USB S-band, Az-El, 11m
    SI1S  1742  Kongsberg Satellite Services, Singapore; S-bd, Az-El,9m
    SIPQ  4003  Saipan; C-bd az-el
    SN2F  4443  San.Nicolas Island, CA; C-bd FPS-16V 4.9m az-el SN 13
@@ -607,21 +641,28 @@ Table 3: STATION LOCATION AND EQUIPMENT
    ST1F  4224  St. Thomas, Virgin Island; Capri
    ST2K  4751  White Sands, NM; TDRSS-STGT 18m K-bd az-el
    ST3K  4752  White Sands, NM; TDRSS-STGT 18m K-bd az-el
+   STE1  1934  STGT White Sands, NM; 1.8m Ka-bd,az-el,S-EET-1
+   STE2  1935  STGT White Sands, NM; 4.5m Ku/S-bd,az-el,S-EET-2
    STGK  4750  White Sands, NM; TDRSS-STGT 18m K-bd az-el
    STGS  4753  White Sands, NM; TDRSS-STGT TT&C S1
-   STSS  1741  White Sands, NM; S-bd, az-el
-   STWS  1740  White Sands, NM; S-bd, az-el
+   STSS  1741  White Sands, NM; S-bd, az-el, Ka-bd
+   STWS  1740  White Sands, NM; S-bd, az-el, Ka-bd
    SWNS  1796  Port Hedland, Australia; Tlm S-bd,az-el
    SYOQ  4262  Syowa, Antarctica; C-bd az-el 9m
    TH2S  1731  Thule, Greenland; S-bd az-el
    THUS  1730  Thule, Greenland; S-bd az-el
    TR2S  1738  Antarctica; 7.3m S-band AzEl
+   TR3S  1748  Antarctica; 7.3m USB S-band AzEl
    TSMF  4080  University of Tasmania, Australia; C-bd az-el
    TT2S  1376  Thule, Greenland; Tlm-SGLS S-bd 46-ft az-el
    TTSS  1369  Thule, Greenland; Tlm-SGLS S-bd 14-ft az-el
    TULF  4151  Tularosa, NM; C-bd FPS-16 3.7m az-el
    TULS  4078  (deactivated) Tula Peak, NM; Tlm S-bd 4.3m az-el c&v
    U2HS  1779  USN, Hawaii; S-bd X-bd, 13.4 meter, az-el
+   U2PS  1771  Dongara, Australia; USB S-bd X-bd, 7.3m, az-el
+   U3AS  1745  North Pole, Alaska; USB S-bd cmd,S/X-bd rcv,X-Y 5.4m
+   U4AS  1746  North Pole, Alaska; USB S-bd cmd,S/X-bd rcv,AzEl 7.3
+   U5AS  1747  North Pole, Alaska; USB S-band Az-El 11m
    UL1S  1854  Fairbanks, AK; Az-El 21m S-band
    UL23  1371  Fairbanks, AK; USB 6m X-Y n-s
    UL33  1332  Fairbanks, AK; USB 26m X-Y n-s
@@ -657,7 +698,6 @@ Table 3: STATION LOCATION AND EQUIPMENT
    WHSJ  0201  White Sands, NM; BRT 2-ft manual az-el
    WHSK  1920  White Sands, NM; TDRSS 18m K-bd az-el
    WHSS  1961  White Sands, NM; TDRSS S-bd 10m az-el TT&C
-   WHSX  1842  White Sands; S-bd X-Y VHF
    WL2F  4841  Wallops Island, VA; C-bd FPS-16V 4.9m az-el
    WL2S  4206  Wallops Island, VA; Tlm S-bd 18m az-el
    WL3F  4845  Wallops Island, VA; C-bd FPS-16V 4.9m az-el
@@ -677,8 +717,10 @@ Table 3: STATION LOCATION AND EQUIPMENT
    WPS8  1336  Wallops Island, VA; S-bd 6m X-Y e-w xmit
    WPSA  1334  Wallops Island, VA; USB 9m X-Y e-w
    WPSS  1335  Wallops Island, VA; S-bd 18m az-el receive only
-   WS1S  1931  White Sands, NM; S-bd, ku-bd
+   WS1S  1931  White Sands, NM; S/ka-bd uplk,S-bd downlk,18.3m
    WSCZ  1871  White Sands, NM; az-el, VHF-1
+   WSE1  1932  WSGT White Sands, NM; 1.8m Ka-bd,az-el, W-EET-1
+   WSE2  1933  WSGT White Sands, NM; 4.5m Ku/S-bd,az-el,W-EET-2
    WSSH  1870  White Sands Space Harbor; UHF
    WT1S  4865  Poker Flat, AK; S-bd TOTS
    WT2S  4866  Poker Flat, Ak.; S-bd TOTS
@@ -911,7 +953,7 @@ PINPOINT Inputs
    NDOSL_AS2S_CENTER     = 399
    NDOSL_AS2S_FRAME      = 'ITRF93'
    NDOSL_AS2S_IDCODE     = 399101743
-   NDOSL_AS2S_LATLON     = (  64.8594609444, 212.1502576667,  0.467804 )
+   NDOSL_AS2S_LATLON     = (  64.8594608056, 212.1502543333,  0.237770 )
    NDOSL_AS2S_TOPO_FRAME = 'NDOSL_AS2S_TOPO'
    NDOSL_AS2S_TOPO_ID    = 399101743
    NDOSL_AS2S_UP         = 'Z'
@@ -921,7 +963,7 @@ PINPOINT Inputs
    NDOSL_AS3S_CENTER     = 399
    NDOSL_AS3S_FRAME      = 'ITRF93'
    NDOSL_AS3S_IDCODE     = 399101744
-   NDOSL_AS3S_LATLON     = (  64.8588753889, 212.1458848889,  0.430536 )
+   NDOSL_AS3S_LATLON     = (  64.8588753889, 212.1458848889,  0.220217 )
    NDOSL_AS3S_TOPO_FRAME = 'NDOSL_AS3S_TOPO'
    NDOSL_AS3S_TOPO_ID    = 399101744
    NDOSL_AS3S_UP         = 'Z'
@@ -941,7 +983,7 @@ PINPOINT Inputs
    NDOSL_ASFS_CENTER     = 399
    NDOSL_ASFS_FRAME      = 'ITRF93'
    NDOSL_ASFS_IDCODE     = 399101720
-   NDOSL_ASFS_LATLON     = (  64.8587121389, 212.1424048333,  0.425094 )
+   NDOSL_ASFS_LATLON     = (  64.8587121389, 212.1424048333,  0.217497 )
    NDOSL_ASFS_TOPO_FRAME = 'NDOSL_ASFS_TOPO'
    NDOSL_ASFS_TOPO_ID    = 399101720
    NDOSL_ASFS_UP         = 'Z'
@@ -1037,6 +1079,16 @@ PINPOINT Inputs
    NDOSL_BANF_UP         = 'Z'
    NDOSL_BANF_NORTH      = 'X'
  
+   SITES                   += 'NDOSL_BD1S'
+   NDOSL_BD1S_CENTER     = 399
+   NDOSL_BD1S_FRAME      = 'ITRF93'
+   NDOSL_BD1S_IDCODE     = 399104056
+   NDOSL_BD1S_LATLON     = (  32.3510439167, 295.3411590000, -0.012420 )
+   NDOSL_BD1S_TOPO_FRAME = 'NDOSL_BD1S_TOPO'
+   NDOSL_BD1S_TOPO_ID    = 399104056
+   NDOSL_BD1S_UP         = 'Z'
+   NDOSL_BD1S_NORTH      = 'X'
+ 
    SITES                   += 'NDOSL_BDA3'
    NDOSL_BDA3_CENTER     = 399
    NDOSL_BDA3_FRAME      = 'ITRF93'
@@ -1121,11 +1173,51 @@ PINPOINT Inputs
    NDOSL_BLTJ_CENTER     = 399
    NDOSL_BLTJ_FRAME      = 'ITRF93'
    NDOSL_BLTJ_IDCODE     = 399100290
-   NDOSL_BLTJ_LATLON     = (  39.0027035278, 283.1620721667,  0.060060 )
+   NDOSL_BLTJ_LATLON     = (  39.0027035278, 283.1620721667,  0.013660 )
    NDOSL_BLTJ_TOPO_FRAME = 'NDOSL_BLTJ_TOPO'
    NDOSL_BLTJ_TOPO_ID    = 399100290
    NDOSL_BLTJ_UP         = 'Z'
    NDOSL_BLTJ_NORTH      = 'X'
+ 
+   SITES                   += 'NDOSL_BP1K'
+   NDOSL_BP1K_CENTER     = 399
+   NDOSL_BP1K_FRAME      = 'ITRF93'
+   NDOSL_BP1K_IDCODE     = 399104754
+   NDOSL_BP1K_LATLON     = (  38.4291651944, 282.9160574722, -0.015734 )
+   NDOSL_BP1K_TOPO_FRAME = 'NDOSL_BP1K_TOPO'
+   NDOSL_BP1K_TOPO_ID    = 399104754
+   NDOSL_BP1K_UP         = 'Z'
+   NDOSL_BP1K_NORTH      = 'X'
+ 
+   SITES                   += 'NDOSL_BP1S'
+   NDOSL_BP1S_CENTER     = 399
+   NDOSL_BP1S_FRAME      = 'ITRF93'
+   NDOSL_BP1S_IDCODE     = 399101322
+   NDOSL_BP1S_LATLON     = (  38.4291651944, 282.9160574722, -0.015734 )
+   NDOSL_BP1S_TOPO_FRAME = 'NDOSL_BP1S_TOPO'
+   NDOSL_BP1S_TOPO_ID    = 399101322
+   NDOSL_BP1S_UP         = 'Z'
+   NDOSL_BP1S_NORTH      = 'X'
+ 
+   SITES                   += 'NDOSL_BP2K'
+   NDOSL_BP2K_CENTER     = 399
+   NDOSL_BP2K_FRAME      = 'ITRF93'
+   NDOSL_BP2K_IDCODE     = 399104755
+   NDOSL_BP2K_LATLON     = (  38.4287808333, 282.9160578611, -0.015743 )
+   NDOSL_BP2K_TOPO_FRAME = 'NDOSL_BP2K_TOPO'
+   NDOSL_BP2K_TOPO_ID    = 399104755
+   NDOSL_BP2K_UP         = 'Z'
+   NDOSL_BP2K_NORTH      = 'X'
+ 
+   SITES                   += 'NDOSL_BP2S'
+   NDOSL_BP2S_CENTER     = 399
+   NDOSL_BP2S_FRAME      = 'ITRF93'
+   NDOSL_BP2S_IDCODE     = 399101323
+   NDOSL_BP2S_LATLON     = (  38.4287808333, 282.9160578611, -0.015743 )
+   NDOSL_BP2S_TOPO_FRAME = 'NDOSL_BP2S_TOPO'
+   NDOSL_BP2S_TOPO_ID    = 399101323
+   NDOSL_BP2S_UP         = 'Z'
+   NDOSL_BP2S_NORTH      = 'X'
  
    SITES                   += 'NDOSL_BREQ'
    NDOSL_BREQ_CENTER     = 399
@@ -1317,6 +1409,16 @@ PINPOINT Inputs
    NDOSL_D27D_UP         = 'Z'
    NDOSL_D27D_NORTH      = 'X'
  
+   SITES                   += 'NDOSL_D36D'
+   NDOSL_D36D_CENTER     = 399
+   NDOSL_D36D_FRAME      = 'ITRF93'
+   NDOSL_D36D_IDCODE     = 399101536
+   NDOSL_D36D_LATLON     = ( -35.3951017500, 148.9785441944,  0.685503 )
+   NDOSL_D36D_TOPO_FRAME = 'NDOSL_D36D_TOPO'
+   NDOSL_D36D_TOPO_ID    = 399101536
+   NDOSL_D36D_UP         = 'Z'
+   NDOSL_D36D_NORTH      = 'X'
+ 
    SITES                   += 'NDOSL_DAKS'
    NDOSL_DAKS_CENTER     = 399
    NDOSL_DAKS_FRAME      = 'ITRF93'
@@ -1426,6 +1528,16 @@ PINPOINT Inputs
    NDOSL_DS34_TOPO_ID    = 399101534
    NDOSL_DS34_UP         = 'Z'
    NDOSL_DS34_NORTH      = 'X'
+ 
+   SITES                   += 'NDOSL_DS35'
+   NDOSL_DS35_CENTER     = 399
+   NDOSL_DS35_FRAME      = 'ITRF93'
+   NDOSL_DS35_IDCODE     = 399101535
+   NDOSL_DS35_LATLON     = ( -35.3957955278, 148.9814558056,  0.694889 )
+   NDOSL_DS35_TOPO_FRAME = 'NDOSL_DS35_TOPO'
+   NDOSL_DS35_TOPO_ID    = 399101535
+   NDOSL_DS35_UP         = 'Z'
+   NDOSL_DS35_NORTH      = 'X'
  
    SITES                   += 'NDOSL_DS42'
    NDOSL_DS42_CENTER     = 399
@@ -1647,6 +1759,16 @@ PINPOINT Inputs
    NDOSL_EVCS_UP         = 'Z'
    NDOSL_EVCS_NORTH      = 'X'
  
+   SITES                   += 'NDOSL_FR1X'
+   NDOSL_FR1X_CENTER     = 399
+   NDOSL_FR1X_FRAME      = 'ITRF93'
+   NDOSL_FR1X_IDCODE     = 399101844
+   NDOSL_FR1X_LATLON     = (  34.9506944444, 242.1045555556,  0.717000 )
+   NDOSL_FR1X_TOPO_FRAME = 'NDOSL_FR1X_TOPO'
+   NDOSL_FR1X_TOPO_ID    = 399101844
+   NDOSL_FR1X_UP         = 'Z'
+   NDOSL_FR1X_NORTH      = 'X'
+ 
    SITES                   += 'NDOSL_FR2F'
    NDOSL_FR2F_CENTER     = 399
    NDOSL_FR2F_FRAME      = 'ITRF93'
@@ -1656,6 +1778,16 @@ PINPOINT Inputs
    NDOSL_FR2F_TOPO_ID    = 399104249
    NDOSL_FR2F_UP         = 'Z'
    NDOSL_FR2F_NORTH      = 'X'
+ 
+   SITES                   += 'NDOSL_FR2X'
+   NDOSL_FR2X_CENTER     = 399
+   NDOSL_FR2X_FRAME      = 'ITRF93'
+   NDOSL_FR2X_IDCODE     = 399101845
+   NDOSL_FR2X_LATLON     = (  34.9507222222, 242.1047222222,  0.717000 )
+   NDOSL_FR2X_TOPO_FRAME = 'NDOSL_FR2X_TOPO'
+   NDOSL_FR2X_TOPO_ID    = 399101845
+   NDOSL_FR2X_UP         = 'Z'
+   NDOSL_FR2X_NORTH      = 'X'
  
    SITES                   += 'NDOSL_FRCF'
    NDOSL_FRCF_CENTER     = 399
@@ -1867,6 +1999,16 @@ PINPOINT Inputs
    NDOSL_GW3S_UP         = 'Z'
    NDOSL_GW3S_NORTH      = 'X'
  
+   SITES                   += 'NDOSL_GWE2'
+   NDOSL_GWE2_CENTER     = 399
+   NDOSL_GWE2_FRAME      = 'ITRF93'
+   NDOSL_GWE2_IDCODE     = 399101936
+   NDOSL_GWE2_LATLON     = (  13.5867563889, 144.8408041944,  0.191148 )
+   NDOSL_GWE2_TOPO_FRAME = 'NDOSL_GWE2_TOPO'
+   NDOSL_GWE2_TOPO_ID    = 399101936
+   NDOSL_GWE2_UP         = 'Z'
+   NDOSL_GWE2_NORTH      = 'X'
+ 
    SITES                   += 'NDOSL_GWM3'
    NDOSL_GWM3_CENTER     = 399
    NDOSL_GWM3_FRAME      = 'ITRF93'
@@ -2006,6 +2148,16 @@ PINPOINT Inputs
    NDOSL_HR2S_TOPO_ID    = 399101719
    NDOSL_HR2S_UP         = 'Z'
    NDOSL_HR2S_NORTH      = 'X'
+ 
+   SITES                   += 'NDOSL_HR3S'
+   NDOSL_HR3S_CENTER     = 399
+   NDOSL_HR3S_FRAME      = 'ITRF93'
+   NDOSL_HR3S_IDCODE     = 399101749
+   NDOSL_HR3S_LATLON     = (  39.0006027778, 283.1585616667, -0.030420 )
+   NDOSL_HR3S_TOPO_FRAME = 'NDOSL_HR3S_TOPO'
+   NDOSL_HR3S_TOPO_ID    = 399101749
+   NDOSL_HR3S_UP         = 'Z'
+   NDOSL_HR3S_NORTH      = 'X'
  
    SITES                   += 'NDOSL_HT2S'
    NDOSL_HT2S_CENTER     = 399
@@ -2307,6 +2459,16 @@ PINPOINT Inputs
    NDOSL_KU3S_UP         = 'Z'
    NDOSL_KU3S_NORTH      = 'X'
  
+   SITES                   += 'NDOSL_KUSS'
+   NDOSL_KUSS_CENTER     = 399
+   NDOSL_KUSS_FRAME      = 'ITRF93'
+   NDOSL_KUSS_IDCODE     = 399104055
+   NDOSL_KUSS_LATLON     = (  28.5420649167, 279.3570476389,  0.009830 )
+   NDOSL_KUSS_TOPO_FRAME = 'NDOSL_KUSS_TOPO'
+   NDOSL_KUSS_TOPO_ID    = 399104055
+   NDOSL_KUSS_UP         = 'Z'
+   NDOSL_KUSS_NORTH      = 'X'
+ 
    SITES                   += 'NDOSL_LANS'
    NDOSL_LANS_CENTER     = 399
    NDOSL_LANS_FRAME      = 'ITRF93'
@@ -2571,7 +2733,7 @@ PINPOINT Inputs
    NDOSL_PDLS_CENTER     = 399
    NDOSL_PDLS_FRAME      = 'ITRF93'
    NDOSL_PDLS_IDCODE     = 399104054
-   NDOSL_PDLS_LATLON     = (  29.0666483889, 279.0869786389, -0.022690 )
+   NDOSL_PDLS_LATLON     = (  29.0666474444, 279.0869767500,  0.009845 )
    NDOSL_PDLS_TOPO_FRAME = 'NDOSL_PDLS_TOPO'
    NDOSL_PDLS_TOPO_ID    = 399104054
    NDOSL_PDLS_UP         = 'Z'
@@ -2807,6 +2969,16 @@ PINPOINT Inputs
    NDOSL_SG4S_UP         = 'Z'
    NDOSL_SG4S_NORTH      = 'X'
  
+   SITES                   += 'NDOSL_SG6S'
+   NDOSL_SG6S_CENTER     = 399
+   NDOSL_SG6S_FRAME      = 'ITRF93'
+   NDOSL_SG6S_IDCODE     = 399101750
+   NDOSL_SG6S_LATLON     = (  78.2308020000,  15.4172880000,  0.446184 )
+   NDOSL_SG6S_TOPO_FRAME = 'NDOSL_SG6S_TOPO'
+   NDOSL_SG6S_TOPO_ID    = 399101750
+   NDOSL_SG6S_UP         = 'Z'
+   NDOSL_SG6S_NORTH      = 'X'
+ 
    SITES                   += 'NDOSL_SI1S'
    NDOSL_SI1S_CENTER     = 399
    NDOSL_SI1S_FRAME      = 'ITRF93'
@@ -2896,6 +3068,26 @@ PINPOINT Inputs
    NDOSL_ST3K_TOPO_ID    = 399104752
    NDOSL_ST3K_UP         = 'Z'
    NDOSL_ST3K_NORTH      = 'X'
+ 
+   SITES                   += 'NDOSL_STE1'
+   NDOSL_STE1_CENTER     = 399
+   NDOSL_STE1_FRAME      = 'ITRF93'
+   NDOSL_STE1_IDCODE     = 399101934
+   NDOSL_STE1_LATLON     = (  32.5435743056, 253.3879826944,  1.447810 )
+   NDOSL_STE1_TOPO_FRAME = 'NDOSL_STE1_TOPO'
+   NDOSL_STE1_TOPO_ID    = 399101934
+   NDOSL_STE1_UP         = 'Z'
+   NDOSL_STE1_NORTH      = 'X'
+ 
+   SITES                   += 'NDOSL_STE2'
+   NDOSL_STE2_CENTER     = 399
+   NDOSL_STE2_FRAME      = 'ITRF93'
+   NDOSL_STE2_IDCODE     = 399101935
+   NDOSL_STE2_LATLON     = (  32.5422753889, 253.3879616944,  1.446320 )
+   NDOSL_STE2_TOPO_FRAME = 'NDOSL_STE2_TOPO'
+   NDOSL_STE2_TOPO_ID    = 399101935
+   NDOSL_STE2_UP         = 'Z'
+   NDOSL_STE2_NORTH      = 'X'
  
    SITES                   += 'NDOSL_STGK'
    NDOSL_STGK_CENTER     = 399
@@ -2987,6 +3179,16 @@ PINPOINT Inputs
    NDOSL_TR2S_UP         = 'Z'
    NDOSL_TR2S_NORTH      = 'X'
  
+   SITES                   += 'NDOSL_TR3S'
+   NDOSL_TR3S_CENTER     = 399
+   NDOSL_TR3S_FRAME      = 'ITRF93'
+   NDOSL_TR3S_IDCODE     = 399101748
+   NDOSL_TR3S_LATLON     = ( -72.0021470833,   2.5250117500,  1.409348 )
+   NDOSL_TR3S_TOPO_FRAME = 'NDOSL_TR3S_TOPO'
+   NDOSL_TR3S_TOPO_ID    = 399101748
+   NDOSL_TR3S_UP         = 'Z'
+   NDOSL_TR3S_NORTH      = 'X'
+ 
    SITES                   += 'NDOSL_TSMF'
    NDOSL_TSMF_CENTER     = 399
    NDOSL_TSMF_FRAME      = 'ITRF93'
@@ -3046,6 +3248,46 @@ PINPOINT Inputs
    NDOSL_U2HS_TOPO_ID    = 399101779
    NDOSL_U2HS_UP         = 'Z'
    NDOSL_U2HS_NORTH      = 'X'
+ 
+   SITES                   += 'NDOSL_U2PS'
+   NDOSL_U2PS_CENTER     = 399
+   NDOSL_U2PS_FRAME      = 'ITRF93'
+   NDOSL_U2PS_IDCODE     = 399101771
+   NDOSL_U2PS_LATLON     = ( -29.0456944444, 115.3490277778,  0.249700 )
+   NDOSL_U2PS_TOPO_FRAME = 'NDOSL_U2PS_TOPO'
+   NDOSL_U2PS_TOPO_ID    = 399101771
+   NDOSL_U2PS_UP         = 'Z'
+   NDOSL_U2PS_NORTH      = 'X'
+ 
+   SITES                   += 'NDOSL_U3AS'
+   NDOSL_U3AS_CENTER     = 399
+   NDOSL_U3AS_FRAME      = 'ITRF93'
+   NDOSL_U3AS_IDCODE     = 399101745
+   NDOSL_U3AS_LATLON     = (  64.8044176944, 212.4981181111,  0.157900 )
+   NDOSL_U3AS_TOPO_FRAME = 'NDOSL_U3AS_TOPO'
+   NDOSL_U3AS_TOPO_ID    = 399101745
+   NDOSL_U3AS_UP         = 'Z'
+   NDOSL_U3AS_NORTH      = 'X'
+ 
+   SITES                   += 'NDOSL_U4AS'
+   NDOSL_U4AS_CENTER     = 399
+   NDOSL_U4AS_FRAME      = 'ITRF93'
+   NDOSL_U4AS_IDCODE     = 399101746
+   NDOSL_U4AS_LATLON     = (  64.8047200833, 212.4957875278,  0.157200 )
+   NDOSL_U4AS_TOPO_FRAME = 'NDOSL_U4AS_TOPO'
+   NDOSL_U4AS_TOPO_ID    = 399101746
+   NDOSL_U4AS_UP         = 'Z'
+   NDOSL_U4AS_NORTH      = 'X'
+ 
+   SITES                   += 'NDOSL_U5AS'
+   NDOSL_U5AS_CENTER     = 399
+   NDOSL_U5AS_FRAME      = 'ITRF93'
+   NDOSL_U5AS_IDCODE     = 399101747
+   NDOSL_U5AS_LATLON     = (  64.8034140556, 212.4994057500,  0.160300 )
+   NDOSL_U5AS_TOPO_FRAME = 'NDOSL_U5AS_TOPO'
+   NDOSL_U5AS_TOPO_ID    = 399101747
+   NDOSL_U5AS_UP         = 'Z'
+   NDOSL_U5AS_NORTH      = 'X'
  
    SITES                   += 'NDOSL_UL1S'
    NDOSL_UL1S_CENTER     = 399
@@ -3397,16 +3639,6 @@ PINPOINT Inputs
    NDOSL_WHSS_UP         = 'Z'
    NDOSL_WHSS_NORTH      = 'X'
  
-   SITES                   += 'NDOSL_WHSX'
-   NDOSL_WHSX_CENTER     = 399
-   NDOSL_WHSX_FRAME      = 'ITRF93'
-   NDOSL_WHSX_IDCODE     = 399101842
-   NDOSL_WHSX_LATLON     = (  32.5009413889, 253.3919829167,  1.477061 )
-   NDOSL_WHSX_TOPO_FRAME = 'NDOSL_WHSX_TOPO'
-   NDOSL_WHSX_TOPO_ID    = 399101842
-   NDOSL_WHSX_UP         = 'Z'
-   NDOSL_WHSX_NORTH      = 'X'
- 
    SITES                   += 'NDOSL_WL2F'
    NDOSL_WL2F_CENTER     = 399
    NDOSL_WL2F_FRAME      = 'ITRF93'
@@ -3551,7 +3783,7 @@ PINPOINT Inputs
    NDOSL_WP3Z_CENTER     = 399
    NDOSL_WP3Z_FRAME      = 'ITRF93'
    NDOSL_WP3Z_IDCODE     = 399101841
-   NDOSL_WP3Z_LATLON     = (  37.9236312222, 284.5224715556, -0.002928 )
+   NDOSL_WP3Z_LATLON     = (  37.9236312222, 284.5224715556, -0.020388 )
    NDOSL_WP3Z_TOPO_FRAME = 'NDOSL_WP3Z_TOPO'
    NDOSL_WP3Z_TOPO_ID    = 399101841
    NDOSL_WP3Z_UP         = 'Z'
@@ -3616,6 +3848,26 @@ PINPOINT Inputs
    NDOSL_WSCZ_TOPO_ID    = 399101871
    NDOSL_WSCZ_UP         = 'Z'
    NDOSL_WSCZ_NORTH      = 'X'
+ 
+   SITES                   += 'NDOSL_WSE1'
+   NDOSL_WSE1_CENTER     = 399
+   NDOSL_WSE1_FRAME      = 'ITRF93'
+   NDOSL_WSE1_IDCODE     = 399101932
+   NDOSL_WSE1_LATLON     = (  32.5013735000, 253.3915443889,  1.449630 )
+   NDOSL_WSE1_TOPO_FRAME = 'NDOSL_WSE1_TOPO'
+   NDOSL_WSE1_TOPO_ID    = 399101932
+   NDOSL_WSE1_UP         = 'Z'
+   NDOSL_WSE1_NORTH      = 'X'
+ 
+   SITES                   += 'NDOSL_WSE2'
+   NDOSL_WSE2_CENTER     = 399
+   NDOSL_WSE2_FRAME      = 'ITRF93'
+   NDOSL_WSE2_IDCODE     = 399101933
+   NDOSL_WSE2_LATLON     = (  32.5013735000, 253.3914573056,  1.457860 )
+   NDOSL_WSE2_TOPO_FRAME = 'NDOSL_WSE2_TOPO'
+   NDOSL_WSE2_TOPO_ID    = 399101933
+   NDOSL_WSE2_UP         = 'Z'
+   NDOSL_WSE2_NORTH      = 'X'
  
    SITES                   += 'NDOSL_WSSH'
    NDOSL_WSSH_CENTER     = 399
