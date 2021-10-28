@@ -134,7 +134,7 @@ class LinCov(object):
         return H, R_alt
 
 
-    def vel_update(self, x, P, rel):
+    def velocimeter_update(self, x, P, rel):
         if rel in ('earth', 399):
             body_id = 399
             x_pci   = x.eci
@@ -148,9 +148,9 @@ class LinCov(object):
         # given in the yml. The computation is done in yaml_loader.py.
         # They are in the NDL frame.
         T_inrtl_to_vel = x.T_inrtl_to_body[0:3,0:3].T.dot(self.T_vel_to_body).T
-        T_inrtl_to_vel_a = T_inrtl_to_vel.dot(x.params.T_vel_a)
-        T_inrtl_to_vel_b = T_inrtl_to_vel.dot(x.params.T_vel_b)
-        T_inrtl_to_vel_c = T_inrtl_to_vel.dot(x.params.T_vel_c)
+        T_inrtl_to_vel_a = T_inrtl_to_vel.dot(x.params.T_velocimeter_a)
+        T_inrtl_to_vel_b = T_inrtl_to_vel.dot(x.params.T_velocimeter_b)
+        T_inrtl_to_vel_c = T_inrtl_to_vel.dot(x.params.T_velocimeter_c)
 
         zhat = np.array([0.0, 0.0, 1.0])
         
@@ -174,7 +174,7 @@ class LinCov(object):
             H[2,0:3] = u_c_inrtl.dot(Tdot_inrtl_to_pcpf.T) # this second term is negative omega cross, hopefully
             H[2,3:6] = u_c_inrtl
 
-        R_vel = np.eye(3) * x.params.vel_sigma**2
+        R_vel = np.eye(3) * x.params.velocimeter_sigma**2
 
         return H, R_vel
         
@@ -307,6 +307,20 @@ class LinCov(object):
             elif meas_type == 'twoway_doppler':
                 if len(self.x.visible_from) > 0:
                     H, R = self.twoway_doppler_update(x, P)
+                    updated = True
+            elif meas_type == 'altimeter':
+                if self.alt_altimeter_earth >= self.params.altimeter_min_alt and self.alt_altimeter_earth <= self.params.altimeter_max_alt:
+                    H, R = self.altimeter_update(x, P, 'earth')
+                    updated = True
+                elif self.alt_altimeter_moon >= self.params.altimeter_min_alt and self.alt_altimeter_moon <= self.params.altimeter_max_alt:
+                    H, R = self.altimeter_update(x, P, 'moon')
+                    updated = True
+            elif meas_type == 'velocimeter':
+                if self.alt_velocimeter_earth >= self.params.velocimeter_min_alt and self.alt_velocimeter_earth <= self.params.velocimeter_max_alt:
+                    H, R = self.velocimeter_update(x, P, 'earth')
+                    updated = True
+                elif self.alt_velocimeter_moon >= self.params.velocimeter_min_alt and self.alt_velocimeter_moon <= self.params.velocimeter_max_alt:
+                    H, R = self.velocimeter_update(x, P, 'moon')
                     updated = True
             else:
                 raise NotImplemented("unrecognized update type '{}'".format(meas_type))

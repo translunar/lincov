@@ -18,6 +18,23 @@ def sun_spacecraft_angle(body, time, object_id):
     sc /= norm(sc)
     return np.arccos(np.dot(sun, sc))
 
+def altitude_along_vector(loader, body, position, boresight):
+    if body == 'earth':
+        radii = loader.radii_earth
+    elif body == 'moon':
+        radii = loader.radii_moon
+    
+    if np.dot(boresight, position) >= 0:
+        return float('inf')
+
+    # Does this need to check for within planetary ellipsoid?
+
+    nearest_point, distance = spice.npedln(*radii, position, boresight)
+    if distance == 0.0:
+        return norm(position - nearest_point)
+    else:
+        return float('inf')
+    
 
 class State(object):
     """State information for the linear covariance analysis"""
@@ -28,7 +45,7 @@ class State(object):
         self.loader = loader
         self.params = params
         self.command = command
-        self.mu_earth = loader.mu_earth * 1e9
+        self.mu_earth = loader.mu_earth * 1e9 # put in m^3/s^2
         self.mu_moon  = loader.mu_moon * 1e9
 
         # Ensure that ground station locations are loaded
@@ -78,8 +95,10 @@ class State(object):
             planet_occult_code = None
             moon_occult_code = None
 
-        self.horizon_moon_enabled = False
+        self.horizon_moon_enabled  = False
         self.horizon_earth_enabled = False
+        self.velocimeter_enabled   = False
+        self.altimeter_enabled     = False
         
         if planet_occult_code == 0:
             if 'horizon_fov' in self.params:
@@ -119,6 +138,21 @@ class State(object):
         self.range_earth = norm(self.eci[0:3])
         self.range_moon  = norm(self.lci[0:3])
 
+        # Get boresight directions for velocimeter and altimeter so we can take measurements with them.
+        T_alt_to_inrtl = self.T_inrtl_to_body.T.dot(self.T_alt_to_body)
+        T_vel_to_inrtl = self.T_inrtl_to_body.T.dot(self.T_vel_to_body)
+        altimeter_boresight_inrtl  = T_alt_to_inrtl.dot(np.array([0.0, 0.0, 1.0]))
+        altimeter_boresight_inrtl /= norm(alt_boresight_inrtl)
+        velocimeter_boresight_inrtl  = T_vel_to_inrtl.dot(np.array([0.0, 0.0, 1.0]))
+        velocimeter_boresight_inrtl /= norm(vel_boresight_inrtl)
+
+        # Determine altitudes along boresights of altimeter and velocimeter (initially for comparison to range constraints
+        # on these sensors)
+        self.alt_altimeter_earth   = altitude_along_vector(self.loader, 'earth', self.eci, altimeter_boresight_inrtl)
+        self.alt_altimeter_moon    = altitude_along_vector(self.loader, 'moon',  self.lci, altimeter_boresight_inrtl)
+        self.alt_velocimeter_earth = altitude_along_vector(self.loader, 'earth', self.eci, velocimeter_boresight_inrtl)
+        self.alt_velocimeter_moon  = altitude_along_vector(self.loader, 'moon',  self.lci, velocimeter_boresight_inrtl)
+
         self.time = time
 
     @property
@@ -146,8 +180,16 @@ class State(object):
         return self.loader.T_body_to_alt
 
     @property
+    def T_alt_to_body(self):
+        return self.loader.T_body_to_alt.T
+
+    @property
     def T_body_to_vel(self):
         return self.loader.T_body_to_vel
+
+    @property
+    def T_vel_to_body(self):
+        return self.loader.T_body_to_vel.T
 
     def range(self, rel):
         if rel == 'earth':

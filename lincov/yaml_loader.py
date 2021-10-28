@@ -125,13 +125,13 @@ class YamlLoader(object):
             elif type(self.params[key]) == CommentedSeq:
                 self.params[key] = np.array(self.params[key])
             elif key[-10:] == '_az_el_deg':
-                # Start with an x unit vector.
+                # Start with a z unit vector.
+                # Rotate it about the y axis to take it from a z unit vector to being an x unit vector.
                 # Rotate it about the y axis to set the elevation.
                 # Rotate it about the z axis to set the azimuth.
                 # Also, convert from degrees to radians.
                 az = scale(self.params[key][0], np.pi/180.0)
                 el = scale(self.params[key][1], np.pi/180.0)
-                dir = np.array([1.0, 0.0, 0.0])
                 T_az_el = rotate_y(np.pi - el).dot(rotate_z(az)) # rotation from case frame to unit vector along z axis frame
                 self.params['T_' + key[:-10]] = T_az_el
 
