@@ -148,15 +148,17 @@ if __name__ == '__main__':
     if len(sys.argv) < 2:
         raise SyntaxError("expected run name")
 
-    label = sys.argv[1]
-    name  = sys.argv[2]
-    start = float(sys.argv[3])
-    end   = float(sys.argv[4])
+    mission     = sys.argv[1]
+    label       = sys.argv[2]
+    config      = YamlLoader(mission, label)
+    name        = sys.argv[3]
+    start       = int(sys.argv[4])
+    end         = int(sys.argv[5])
 
-    config = YamlLoader(label)
-    loader = SpiceLoader('spacecraft')
-    start_block = find_block(start, config.block_dt)
-    end_block   = find_block(end,   config.block_dt)
+    
+    loader = SpiceLoader(mission, id = config.object_id)
+    start_block = 1344
+    end_block = 1344
     
     print("start block is {}".format(start_block))
     print("end block is {}".format(end_block))

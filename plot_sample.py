@@ -42,13 +42,12 @@ if __name__ == '__main__':
     if len(sys.argv) < 3 or sys.argv[1] in ('-h', '--help'):
         print_usage()
 
-    label = sys.argv[1]
-    mission = sys.argv[2]
-    object_id = int(sys.argv[3])
+    mission = sys.argv[1]
+    label   = sys.argv[2]
     name  = sys.argv[4]
     
-    config = YamlLoader(label)
-    loader = SpiceLoader(mission, id = object_id)
+    config = YamlLoader(mission, label)
+    loader = SpiceLoader(mission, id = config.object_id)
     
     if len(sys.argv) > 5:
         first_time = float(sys.argv[3])

@@ -14,16 +14,16 @@ if __name__ == '__main__':
 
     if len(sys.argv) < 2:
         raise SyntaxError("expected run name")
-
-    label = sys.argv[1]    
-    mission = sys.argv[2]
-    object_id = int(sys.argv[3])
-    count = int(sys.argv[4])
-    loader = SpiceLoader(mission, id = object_id)
+    
+    mission = sys.argv[1]
+    label = sys.argv[2]
+    config = YamlLoader(mission, label)
+    count = int(sys.argv[3])
+    loader = SpiceLoader(mission, id = config.object_id)
 
     l = LinCov.start_from(loader, label, count = count)
     while not l.finished:
         for step, mode in l.run():
-            progress_bar(60, step.time - loader.start, loader.end - loader.start)
+            progress_bar(60, step.time - config.time.start, config.time.end - config.time.start)
 
 

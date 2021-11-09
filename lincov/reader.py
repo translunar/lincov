@@ -11,11 +11,7 @@ def find_block(time, block_dt):
     raw_id = time / block_dt
     return int(math.floor(raw_id)) + 1
 
-def load_window(loader, label, start, end, name = 'state_sigma'):
-    config = YamlLoader(label)
-    start_block_id = find_block(start, config.block_dt)
-    end_block_id   = find_block(end,   config.block_dt)
-    
+def load_window(loader, label, start_block_id, end_block_id, name = 'state_sigma'):    
     # Read one block
     if start_block_id == end_block_id:
         filename = 'output/{}/{}.{:04d}.feather'.format(label, name, start_block_id)

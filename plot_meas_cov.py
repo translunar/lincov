@@ -24,15 +24,17 @@ from lincov import LinCov
 if __name__ == '__main__':
 
     if len(sys.argv) < 4:
-        raise SyntaxError("expected run name, index number, body name")
+        raise SyntaxError("expected mission, label, meas type, time")
 
-    label = sys.argv[1]
-    meas  = sys.argv[2]
-    time  = float(sys.argv[3])
+    mission = sys.argv[1]
+    label   = sys.argv[2]
+    meas    = sys.argv[3]
+    time    = float(sys.argv[4])
     
-    loader = SpiceLoader('spacecraft')
+    loader  = SpiceLoader(mission)
+    body    = int(sys.argv[5])
 
-    P, time = LinCov.load_covariance(name, count)
+    P, time = LinCov.load_covariance(label, count)
     plot_lvlh_covariance(P, time, body)
 
 

@@ -60,19 +60,21 @@ def plot_covariance(P, **kwargs):
 
 if __name__ == '__main__':
 
-    if len(sys.argv) < 4:
-        raise SyntaxError("expected run name, index number, body name")
+    if len(sys.argv) < 5:
+        raise SyntaxError("expected mission, segment, index number, body name")
 
-    labels = sys.argv[1]
+    mission = sys.argv[1]
+    labels = sys.argv[2]
     try:
-        count = int(sys.argv[2])
+        count          = int(sys.argv[3])
         snapshot_label = None
     except ValueError:
-        count = None
-        snapshot_label = sys.argv[2]
-    body  = sys.argv[3]
+        count          = None
+        snapshot_label = sys.argv[3]
+    body  = int(sys.argv[4])
     
-    loader = SpiceLoader('spacecraft')
+    config = YamlLoader(mission, labels)
+    loader = SpiceLoader(mission, id = config.object_id)
 
     axes = None
     

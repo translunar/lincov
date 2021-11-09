@@ -5,6 +5,7 @@ import numpy as np
 from scipy.linalg import norm
 
 import lincov.horizon as horizon
+from lincov.attitude_command import AttributeDict
 
 
 def sun_spacecraft_angle(body, time, object_id):
@@ -28,12 +29,14 @@ def altitude_along_vector(loader, body, position, boresight):
         return float('inf')
 
     # Does this need to check for within planetary ellipsoid?
-
-    nearest_point, distance = spice.npedln(*radii, position, boresight)
+    pos_km = position / 1000.0
+    nearest_point, distance = spice.npedln(*radii, pos_km, boresight)
     if distance == 0.0:
-        return norm(position - nearest_point)
+        return norm(pos_km - nearest_point) * 1000.0 # put back in meters
     else:
         return float('inf')
+
+
     
 
 class State(object):
@@ -45,6 +48,7 @@ class State(object):
         self.loader = loader
         self.params = params
         self.command = command
+        self.sensors = params.sensors
         self.mu_earth = loader.mu_earth * 1e9 # put in m^3/s^2
         self.mu_moon  = loader.mu_moon * 1e9
 
@@ -102,10 +106,10 @@ class State(object):
         
         if planet_occult_code == 0:
             if 'horizon_fov' in self.params:
-                if self.earth_angle < self.params.horizon_fov and self.earth_phase_angle < self.params.horizon_max_phase_angle:
+                if self.earth_angle < self.sensors.horizon.fov and self.earth_phase_angle < self.sensors.horizon.max_phase_angle:
                     self.horizon_earth_enabled = True
             
-                if self.moon_angle < self.params.horizon_fov and self.moon_phase_angle < self.params.horizon_max_phase_angle:
+                if self.moon_angle < self.sensors.horizon.fov and self.moon_phase_angle < self.sensors.horizon.max_phase_angle:
                     self.horizon_moon_enabled = True
         else:
             self.earth_angle = 0.0
@@ -139,21 +143,44 @@ class State(object):
         self.range_moon  = norm(self.lci[0:3])
 
         # Get boresight directions for velocimeter and altimeter so we can take measurements with them.
-        T_alt_to_inrtl = self.T_inrtl_to_body.T.dot(self.T_alt_to_body)
-        T_vel_to_inrtl = self.T_inrtl_to_body.T.dot(self.T_vel_to_body)
-        altimeter_boresight_inrtl  = T_alt_to_inrtl.dot(np.array([0.0, 0.0, 1.0]))
-        altimeter_boresight_inrtl /= norm(alt_boresight_inrtl)
-        velocimeter_boresight_inrtl  = T_vel_to_inrtl.dot(np.array([0.0, 0.0, 1.0]))
-        velocimeter_boresight_inrtl /= norm(vel_boresight_inrtl)
+        T_alt_to_inrtl = self.sensors.altimeter.T_body_to_case.dot(self.T_inrtl_to_body).T
+        self.sensors.altimeter.boresight_inrtl = T_alt_to_inrtl.dot(np.array([0.0, 0.0, 1.0]))
+        self.sensors.altimeter.boresight_inrtl /= norm(self.sensors.altimeter.boresight_inrtl)
+
+        # These transformation matrices are computed from azimuths and elevations
+        # ordinarily given in the config yaml. The computation is done in yaml_loader.py
+        T_velocimeter_a_to_inrtl = self.sensors.velocimeter.T_beam_a.dot(self.sensors.velocimeter.T_body_to_case.dot(self.T_inrtl_to_body)).T
+        velocimeter_a_boresight_inrtl  = T_velocimeter_a_to_inrtl.dot(np.array([0.0, 0.0, 1.0]))
+
+        T_velocimeter_b_to_inrtl = self.sensors.velocimeter.T_beam_b.dot(self.sensors.velocimeter.T_body_to_case.dot(self.T_inrtl_to_body)).T
+        velocimeter_b_boresight_inrtl  = T_velocimeter_b_to_inrtl.dot(np.array([0.0, 0.0, 1.0]))
+
+        T_velocimeter_c_to_inrtl = self.sensors.velocimeter.T_beam_c.dot(self.sensors.velocimeter.T_body_to_case.dot(self.T_inrtl_to_body)).T
+        velocimeter_c_boresight_inrtl  = T_velocimeter_c_to_inrtl.dot(np.array([0.0, 0.0, 1.0]))
+
+        self.sensors.velocimeter.boresight_inrtl = AttributeDict({'a': velocimeter_a_boresight_inrtl / norm(velocimeter_a_boresight_inrtl),
+                                                                  'b': velocimeter_b_boresight_inrtl / norm(velocimeter_b_boresight_inrtl),
+                                                                  'c': velocimeter_c_boresight_inrtl / norm(velocimeter_c_boresight_inrtl)})
 
         # Determine altitudes along boresights of altimeter and velocimeter (initially for comparison to range constraints
         # on these sensors)
-        self.alt_altimeter_earth   = altitude_along_vector(self.loader, 'earth', self.eci, altimeter_boresight_inrtl)
-        self.alt_altimeter_moon    = altitude_along_vector(self.loader, 'moon',  self.lci, altimeter_boresight_inrtl)
-        self.alt_velocimeter_earth = altitude_along_vector(self.loader, 'earth', self.eci, velocimeter_boresight_inrtl)
-        self.alt_velocimeter_moon  = altitude_along_vector(self.loader, 'moon',  self.lci, velocimeter_boresight_inrtl)
-
+        self.sensors.altimeter.alt = AttributeDict({'earth': altitude_along_vector(self.loader, 'earth', self.eci[0:3], self.sensors.altimeter.boresight_inrtl),
+                                                    'moon':  altitude_along_vector(self.loader, 'moon',  self.lci[0:3], self.sensors.altimeter.boresight_inrtl)})
+        self.sensors.velocimeter.alt = AttributeDict({'earth':
+            AttributeDict({'a': altitude_along_vector(self.loader, 'earth', self.eci[0:3], self.sensors.velocimeter.boresight_inrtl.a),
+                          'b': altitude_along_vector(self.loader, 'earth', self.eci[0:3], self.sensors.velocimeter.boresight_inrtl.b),
+                          'c': altitude_along_vector(self.loader, 'earth', self.eci[0:3], self.sensors.velocimeter.boresight_inrtl.c)
+            }),
+            'moon':
+            AttributeDict({'a': altitude_along_vector(self.loader, 'moon',  self.lci[0:3], self.sensors.velocimeter.boresight_inrtl.a),
+                           'b': altitude_along_vector(self.loader, 'moon',  self.lci[0:3], self.sensors.velocimeter.boresight_inrtl.b),
+                           'c': altitude_along_vector(self.loader, 'moon',  self.lci[0:3], self.sensors.velocimeter.boresight_inrtl.c)})
+        })
         self.time = time
+
+        #if self.d_moon - 1737401.0 < 500.0:
+        #    import pdb
+        #    pdb.set_trace()
 
     @property
     def object_id(self):
@@ -161,35 +188,53 @@ class State(object):
 
     @property
     def T_body_to_att(self):
-        return self.loader.T_body_to_att
+        if 'att' in self.sensors and 'T_body_to_case' in self.sensors.att:
+            return self.sensors.att.T_body_to_case
+        else:
+            return np.identity(3)
 
     @property
     def T_body_to_horizon_cam(self):
-        return self.loader.T_body_to_horizon_cam
+        if 'horizon' in self.sensors and 'T_body_to_case' in self.sensors.horizon:
+            return self.sensors.horizon.T_body_to_case
+        else:
+            return np.identity(3)
 
     @property
     def T_body_to_trn_cam(self):
-        return self.loader.T_body_to_trn_cam
+        if 'trn' in self.sensors and 'T_body_to_case' in self.sensors.trn:
+            return self.sensors.trn.T_body_to_case
+        else:
+            return np.identity(3)
 
     @property
     def T_body_to_hrn_cam(self):
-        return self.loader.T_body_to_hrn_cam
+        if 'hrn' in self.sensors and 'T_body_to_case' in self.sensors.hrn:
+            return self.sensors.hrn.T_body_to_case
+        else:
+            return np.identity(3)
 
     @property
-    def T_body_to_alt(self):
-        return self.loader.T_body_to_alt
+    def T_body_to_altimeter(self):
+        if 'altimeter' in self.sensors and 'T_body_to_case' in self.sensors.altimeter:
+            return self.sensors.altimeter.T_body_to_case
+        else:
+            return np.identity(3)
 
     @property
-    def T_alt_to_body(self):
-        return self.loader.T_body_to_alt.T
+    def T_altimeter_to_body(self):
+        return self.T_body_to_altimeter.T
 
     @property
-    def T_body_to_vel(self):
-        return self.loader.T_body_to_vel
+    def T_body_to_velocimeter(self):
+        if 'velocimeter' in self.sensors and 'T_body_to_case' in self.sensors.velocimeter:
+            return self.sensors.velocimeter.T_body_to_case
+        else:
+            return np.identity(3)
 
     @property
-    def T_vel_to_body(self):
-        return self.loader.T_body_to_vel.T
+    def T_velocimeter_to_body(self):
+        return self.T_body_to_velocimeter.T
 
     def range(self, rel):
         if rel == 'earth':

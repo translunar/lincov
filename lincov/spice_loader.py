@@ -50,17 +50,6 @@ class SpiceLoader(object):
 
         self.mu_earth        = spice.bodvcd(399, 'GM', 1)[1]
         self.mu_moon         = spice.bodvcd(301, 'GM', 1)[1]
-
-        # Constants that should ultimately probably go in SPICE kernels
-        # once we're working with attitude timelines and frame kernels.
-        # For now let's just pretend they're in SPICE kernels since we
-        # have no spacecraft attitude to contend with.
-        self.T_body_to_att           = np.identity(3)
-        self.T_body_to_horizon_cam   = np.identity(3)
-        self.T_body_to_alt           = np.identity(3)
-        self.T_body_to_vel           = np.identity(3)
-        self.T_body_to_trn_cam       = np.identity(3)
-        self.T_body_to_hrn_cam       = np.identity(3)
         
         self.start, self.end = self.coverage(id = self.object_id)
 
@@ -85,16 +74,3 @@ class SpiceLoader(object):
             id = self.object_id
         return SpiceLoader.spk_coverage(self.dir + self.mission + '.bsp', id)
 
-    def find_count(self, et, block_dt):
-        """Given some ephemeris time, what index number should we look in to
-        find it?
-        
-        Args:
-            et:         ephemeris time in seconds
-            block_dt:   length of time in a block (comes from a config in YamlLoader)
-            
-        Returns:
-            A file index (integer).
-        """
-        count = int(np.floor((et - self.start) / block_dt)) - 1
-        return count

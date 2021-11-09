@@ -18,8 +18,10 @@ import os
 
 if __name__ =='__main__':
 
-    mission = sys.argv[1]
-    object_id = int(sys.argv[2])
+    mission  = sys.argv[1]
+    label     = sys.argv[2]
+    config    = YamlLoader(mission, label)
+    object_id = config.object_id
     loader = SpiceLoader(mission, id = object_id)
 
     time = loader.start

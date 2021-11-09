@@ -4,9 +4,142 @@ from scipy.stats import chi2
 
 import matplotlib.pyplot as plt
 from matplotlib.patches import Ellipse, Circle
-from mpl_toolkits.mplot3d import Axes3D, art3d
+from mpl_toolkits.mplot3d import Axes3D, art3d, proj3d
 
 from lincov.frames import rotate_x, rotate_y, rotate_z
+
+
+def repeat_for_each(elements, times):
+    """Fix for 3d quiver colors."""
+    return [e for e in elements for _ in range(times)]
+
+def render_colors_for_quiver_3d(colors):
+    return list(colors) + repeat_for_each(colors, 2)
+
+def add_frame(ax, T_ax_to_frame,
+          origin = np.zeros(3),
+          scale  = 1.0,
+          alpha  = 1.0,
+          labels = False,
+          colors = ('r', 'g', 'b')):
+    """Draw a coordinate frame with arrows in different colors and optionally axis labels.
+    
+    Args:
+        ax:              matplotlib axes
+        T_ax_to_frame:   rotation matrix describing the frame relative to that of ax
+
+    """
+    if labels == True:
+        labels = ('x', 'y', 'z')
+
+    ax.quiver(*np.hstack((np.vstack((origin, origin, origin)), T_ax_to_frame * scale)).T,
+              colors = render_colors_for_quiver_3d(colors),
+              alpha  = alpha)
+
+    if labels:
+        for ii in range(3):
+            ax.text(*(origin + T_ax_to_frame[ii,:] * scale), labels[ii], color=colors[ii], alpha=alpha)
+
+    return ax
+
+
+def add_arrow(ax, vec, origin = np.zeros(3), scale = 1.0, alpha = 1.0, label = False, color = 'k'):
+    ax.quiver(*origin, *(vec * scale), colors = [color], alpha = alpha)
+
+    if label:
+        ax.text(*(origin + vec * scale), label, color=color, alpha=alpha)
+
+    return ax
+
+
+def pathpatch_2d_to_3d(pathpatch, z = 0, normal = 'z'):
+    """
+    Transforms a 2D Patch to a 3D patch using the given normal vector.
+
+    The patch is projected into they XY plane, rotated about the origin
+    and finally translated by z.
+
+    Reference:
+        * https://stackoverflow.com/questions/18228966/how-can-matplotlib-2d-patches-be-transformed-to-3d-with-arbitrary-normals/33213658#33213658
+    """
+
+    def rotation_matrix(v1,v2):
+        """
+        Calculates the rotation matrix that changes v1 into v2.
+        """
+
+        v1 /= np.linalg.norm(v1)
+        v2 /= np.linalg.norm(v2)
+
+        cos_angle = np.dot(v1,v2)
+        d = np.cross(v1,v2)
+        sin_angle = np.linalg.norm(d)
+
+        if sin_angle == 0:
+            M = np.identity(3) if cos_angle>0. else -np.identity(3)
+        else:
+            d/=sin_angle
+
+            eye = np.eye(3)
+            ddt = np.outer(d, d)
+            skew = np.array([[    0,  d[2], -d[1]],
+                             [-d[2],     0,  d[0]],
+                             [ d[1], -d[0],    0]], dtype=np.float64)
+
+            M = ddt + cos_angle * (eye - ddt) + sin_angle * skew
+
+        return M
+
+    if type(normal) is str: #Translate strings to normal vectors
+        index = "xyz".index(normal)
+        normal = np.roll((1.0, 0.0, 0.0), index)
+
+    path = pathpatch.get_path() #Get the path and the associated transform
+    trans = pathpatch.get_patch_transform()
+
+    path = trans.transform_path(path) #Apply the transform
+
+    pathpatch.__class__ = art3d.PathPatch3D #Change the class
+    pathpatch._code3d = path.codes #Copy the codes
+    pathpatch._facecolor3d = pathpatch.get_facecolor #Get the face color    
+
+    verts = path.vertices #Get the vertices in 2D
+
+    M = rotation_matrix(normal, np.array([0.0, 0.0, 1.0])) #Get the rotation matrix
+
+    pathpatch._segment3d = np.array([np.dot(M, (x, y, 0)) + (0, 0, z) for x, y in verts])
+
+def pathpatch_translate(pathpatch, delta):
+    """
+    Translates the 3D pathpatch by the amount delta.
+
+    Reference:
+        * https://stackoverflow.com/questions/18228966/how-can-matplotlib-2d-patches-be-transformed-to-3d-with-arbitrary-normals/33213658#33213658    
+    """
+    pathpatch._segment3d += delta
+
+
+def add_ellipsoid(ax, a, b = None, c = None, color = 'grey', alpha = 0.5, equator = False):
+    if b is None:
+        b = a
+    if c is None:
+        c = a
+
+    u = np.linspace(0, 2 * np.pi, 100)
+    v = np.linspace(0, np.pi, 100)
+
+    x = a * np.outer(np.cos(u), np.sin(v))
+    y = b * np.outer(np.sin(u), np.sin(v))
+    z = c * np.outer(np.ones_like(u), np.cos(v))
+
+    if equator:
+        equator = Ellipse((0,0), 2 * a, 2 * b, fill = None, alpha = 0.5, edgecolor = 'blue')
+        ax.add_patch(equator)
+        pathpatch_2d_to_3d(equator, z = 0, normal = 'z')
+
+    return ax.plot_surface(x, y, z, rstride = 5, cstride = 5, color = color, alpha = alpha)
+
+
 
 def projected_error_ellipsoid_points(C, n=100):
     """Get points for the projections of a 3D error ellipsoid.
@@ -157,3 +290,4 @@ def error_ellipsoid(cov,
 
     return fig, axes
     
+

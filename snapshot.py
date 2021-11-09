@@ -38,18 +38,14 @@ import sys
 
 if __name__ == '__main__':
 
-    if len(sys.argv) < 2:
-        raise SyntaxError("expected run name")
-
-    label                = sys.argv[1]
+    mission              = sys.argv[1]
+    label                = sys.argv[2]
+    config               = YamlLoader(mission, label)
     mission_elapsed_time = float(sys.argv[2])
     snapshot_label       = sys.argv[3]
-    mission              = sys.argv[4]
-    object_id            = int(sys.argv[5])
 
-    config = YamlLoader(label)
     count  = find_block(mission_elapsed_time, config.block_dt) - 1
-    loader = SpiceLoader(mission, id = object_id)
+    loader = SpiceLoader(mission, id = config.object_id)
 
     l = LinCov.start_from(loader, label, count)
     while not l.finished:

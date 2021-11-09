@@ -95,8 +95,7 @@ class LinCov(object):
     def att_update(self, x, P, plot=False):
         # measurement covariance:
         # FIXME: Needs to be adjusted for star tracker choice
-        R_att = np.diag(x.params.att_sigma ** 2) # arcseconds to radians
-        
+        R_att = np.diag(x.sensors.att.sigma ** 2) # arcseconds to radians
 
         if plot:
             from plot_lincov import plot_covariance
@@ -114,69 +113,60 @@ class LinCov(object):
         if rel in ('earth', 399):
             body_id = 399
             x_pci   = x.eci
+            alt     = x.sensors.altimeter.alt.earth
         elif rel in ('moon', 301):
             body_id = 301
             x_pci   = x.lci
+            alt     = x.sensors.altimeter.alt.moon
 
-        u_alt = np.array([0.0, 0.0, 1.0]) # Boresight is +z-axis
-
-        R_alt = np.array([[x.params.altimeter_sigma]])
+        R_alt = np.array([[x.sensors.altimeter.sigma]])
         H = np.zeros((1, self.N))
 
         # If we cared about the range-rate component, we would want to do
         # this in an PCPF frame, but let's just skip that and do PCI 
-        u_pci = x.T_inrtl_to_body.T.dot(self.T_alt_to_body.dot( u_alt ))
 
         # Re-center at the spacecraft
-        r_rel_pci = x_pci[0:3] + u_pci
-        H[0,0:3] = r_rel_pci / norm(r_rel_pci)
+        updated = False
+        if alt < float('inf'):
+            r_rel_pci = x_pci[0:3] + x.sensors.altimeter.boresight_inrtl
+            H[0,0:3] = r_rel_pci / norm(r_rel_pci)
+            updated = True
 
-        return H, R_alt
+        return H, R_alt, updated
 
 
     def velocimeter_update(self, x, P, rel):
         if rel in ('earth', 399):
             body_id = 399
             x_pci   = x.eci
-            Tdot_inrtl_to_pcpf = self.T_inrtl_to_ecef[3:6,0:3]
+            Tdot_inrtl_to_pcpf = x.T_inrtl_to_ecef[3:6,0:3]
+            alts = x.sensors.velocimeter.alt.earth
         elif rel in ('moon', 301):
             body_id = 301
             x_pci   = x.lci
-            Tdot_inrtl_to_pcpf = self.T_inrtl_to_lclf[3:6,0:3]
+            Tdot_inrtl_to_pcpf = x.T_inrtl_to_lclf[3:6,0:3]
+            alts = x.sensors.velocimeter.alt.moon
 
-        # These unit vectors are computed from azimuths and elevations
-        # given in the yml. The computation is done in yaml_loader.py.
-        # They are in the NDL frame.
-        T_inrtl_to_vel = x.T_inrtl_to_body[0:3,0:3].T.dot(self.T_vel_to_body).T
-        T_inrtl_to_vel_a = T_inrtl_to_vel.dot(x.params.T_velocimeter_a)
-        T_inrtl_to_vel_b = T_inrtl_to_vel.dot(x.params.T_velocimeter_b)
-        T_inrtl_to_vel_c = T_inrtl_to_vel.dot(x.params.T_velocimeter_c)
+        updated = False
+        count   = 0
+        for alt in alts.values():
+            if alt < float('inf'):
+                count += 1
 
-        zhat = np.array([0.0, 0.0, 1.0])
-        
-        u_a_inrtl = zhat.dot(T_inrtl_to_vel_a)
-        u_b_inrtl = zhat.dot(T_inrtl_to_vel_b)
-        u_c_inrtl = zhat.dot(T_inrtl_to_vel_c)
+        H = np.zeros((count, self.N))
+        count = 0
+        for key in alts:
+            if alts[key] < float('inf'):
+                vb_inrtl = x.senosrs.velocimeter.boresight_inrtl[key]
+                H[count,0:3] = Tdot_inrtl_to_pcpf.dot(vb_inrtl) # this second term is negative omega cross, hopefully
+                H[count,3:6] = vb_inrtl
+                count += 1
+                updated = True
 
-        # Get distance from laser to nearest point on planet surface. If zero, we can use the measurement
-        dist_a = spice.npedln(a,b,c, x_pci[0:3], u_a_inrtl[0,:])[1]
-        dist_b = spice.npedln(a,b,c, x_pci[0:3], u_b_inrtl[1,:])[1]
-        dist_c = spice.npedln(a,b,c, x_pci[0:3], u_c_inrtl[2,:])[1]
+        # Process as scalars, so not eye(count) * sigma**2
+        R_vel = np.ones(count) * x.sensors.velocimeter.sigma**2
 
-        H = np.zeros((3, self.N))
-        if dist_a == 0:
-            H[0,0:3] = u_a_inrtl.dot(Tdot_inrtl_to_pcpf.T) # this second term is negative omega cross, hopefully
-            H[0,3:6] = u_a_inrtl
-        if dist_b == 0:
-            H[1,0:3] = u_b_inrtl.dot(Tdot_inrtl_to_pcpf.T) # this second term is negative omega cross, hopefully
-            H[1,3:6] = u_b_inrtl
-        if dist_c == 0:
-            H[2,0:3] = u_c_inrtl.dot(Tdot_inrtl_to_pcpf.T) # this second term is negative omega cross, hopefully
-            H[2,3:6] = u_c_inrtl
-
-        R_vel = np.eye(3) * x.params.velocimeter_sigma**2
-
-        return H, R_vel
+        return H, R_vel, updated
         
 
     def horizon_update(self, x, P, rel, plot=False):
@@ -188,11 +178,11 @@ class LinCov(object):
             r_pci   = x.lci[0:3]
             
         R_cam = horizon.covariance(x.time, body_id,
-                                   fpa_size  = x.params.horizon_fpa_size,
-                                   fov       = x.params.horizon_fov,
-                                   theta_max = x.params.horizon_theta_max,
-                                   sigma_pix = x.params.horizon_sigma_pix,
-                                   n_max     = x.params.horizon_n_max )
+                                   fpa_size  = x.sensors.horizon.fpa_size,
+                                   fov       = x.sensors.horizon.fov,
+                                   theta_max = x.sensors.horizon.theta_max,
+                                   sigma_pix = x.sensors.horizon.sigma_pix,
+                                   n_max     = x.sensors.horizon.n_max )
         
 
         if plot:
@@ -246,7 +236,7 @@ class LinCov(object):
             H[ii,0:3] = dF_dr * 0.5
             H[ii,3:6] = dF_dv * 0.5
 
-            R[ii,ii] = x.params.twoway_doppler_sigma**2
+            R[ii,ii] = x.sensors.twoway_doppler.sigma**2
 
         return H, R
 
@@ -273,13 +263,20 @@ class LinCov(object):
             # We drop the constant frequency term and normalize here
             # so that sigma is given in meters and is also normalized.
             H[ii,0:3] = ((r2 - r1) / r12 - (r3 - r2) / r23) * 0.5
-            R[ii,ii]  = x.params.twoway_range_sigma**2
+            R[ii,ii]  = x.sensors.twoway_range.sigma**2
 
         return H, R
 
+    def velocimeter_alt_in_range(self, center):
+        alts = np.array(list(self.x.sensors.velocimeter.alt[center].values()))
+        return np.any(np.logical_and(alts >= self.sensors.velocimeter.min_alt, alts <= self.sensors.velocimeter.max_alt))
+
+    def altimeter_alt_in_range(self, center):
+        return self.sensors.altimeter.alt[center] >= self.sensors.altimeter.min_alt and self.sensors.altimeter.alt[center] <= self.sensors.altimeter.max_alt
 
     def update(self, meas_type):
         """Attempt to process a measurement update for some measurement type"""
+
         updated = False
 
         time = self.time
@@ -309,45 +306,64 @@ class LinCov(object):
                     H, R = self.twoway_doppler_update(x, P)
                     updated = True
             elif meas_type == 'altimeter':
-                if self.alt_altimeter_earth >= self.params.altimeter_min_alt and self.alt_altimeter_earth <= self.params.altimeter_max_alt:
-                    H, R = self.altimeter_update(x, P, 'earth')
-                    updated = True
-                elif self.alt_altimeter_moon >= self.params.altimeter_min_alt and self.alt_altimeter_moon <= self.params.altimeter_max_alt:
-                    H, R = self.altimeter_update(x, P, 'moon')
-                    updated = True
+                if self.altimeter_alt_in_range('earth'):
+                    H, R, updated = self.altimeter_update(x, P, 'earth')
+                elif self.altimeter_alt_in_range('moon'):
+                    H, R, updated = self.altimeter_update(x, P, 'moon')
             elif meas_type == 'velocimeter':
-                if self.alt_velocimeter_earth >= self.params.velocimeter_min_alt and self.alt_velocimeter_earth <= self.params.velocimeter_max_alt:
-                    H, R = self.velocimeter_update(x, P, 'earth')
-                    updated = True
-                elif self.alt_velocimeter_moon >= self.params.velocimeter_min_alt and self.alt_velocimeter_moon <= self.params.velocimeter_max_alt:
-                    H, R = self.velocimeter_update(x, P, 'moon')
-                    updated = True
+                if self.velocimeter_alt_in_range('earth'):
+                    H, R, updated = self.velocimeter_update(x, P, 'earth')
+                elif self.velocimeter_alt_in_range('moon'):
+                    H, R, updated = self.velocimeter_update(x, P, 'moon')
+                    if updated: print("velocimeter")
             else:
                 raise NotImplemented("unrecognized update type '{}'".format(meas_type))
 
             if updated:
                 self.meas_last[meas_type] = time
-                PHt = P.dot(H.T)
+                
                 
                 if len(H.shape) == 1 or H.shape[0] == 1: # perform a scalar update
+                    PHt = P.dot(H.T)
                     W = H.dot(PHt) + R
                     K = PHt / W[0,0]
 
                     # Scalar joseph update
-                    self.P = P - K.dot(H.dot(P)) - PHt.dot(K.T) + (K*W).dot(K.T)
+                    P_post = P - K.dot(H.dot(P)) - PHt.dot(K.T) + (K*W).dot(K.T)
+
+                elif H.shape[0] == 1 or meas_type in ('velocimeter',): # perform several scalar updates
+                    W = np.zeros(H.shape[0])
+                    for ii in range(H.shape[0]):
+                        PHt = np.expand_dims(P.dot(H[ii,:].T), axis=1)
+                        W   = H[ii,:].dot(PHt).item() + R[ii].item()
+                        K   = PHt / W
+                        HP  = np.expand_dims(H[ii,:].dot(P), axis=0)
+
+                        P += -K.dot(HP) - PHt.dot(K.T) + (K * W).dot(K.T)
+
+
+                    P_post = P
 
                 else: # perform a vector update
+                    # FIXME: This should probably get removed and we should only do scalar updates
+                    PHt = P.dot(H.T)
                     K = PHt.dot(inv(H.dot(PHt) + R))
 
                     # Vector Joseph update
                     I_minus_KH = np.identity(K.shape[0]) - K.dot(H)
-                    self.P     = I_minus_KH.dot(P).dot(I_minus_KH.T) + K.dot(R).dot(K.T)
+                    P_post     = I_minus_KH.dot(P).dot(I_minus_KH.T) + K.dot(R).dot(K.T)
+
+                if np.any(np.diag(P_post[3:6,3:6]) < 0):
+                    import pdb
+                    pdb.set_trace()
+
+                self.P = P_post
 
         return updated, R
 
     def propagate(self):
         """Propagate covariance matrix forward in time by dt"""
-        self.x = State(self.time, loader = self.loader, params = self.params)
+        self.x = State(self.time, loader = self.loader, params = self.params, command = self.command)
         Phi = self.Phi = self.state_transition()
         P = self.P
         Q = self.Q
@@ -386,12 +402,12 @@ class LinCov(object):
 
     def save_metadata(self, snapshot_label = None):
         metadata = {
-            'meas_last': self.meas_last,
-            'start':     self.start,
-            'meas_dt':   self.meas_dt,
-            'count':     self.count,
-            'dt':        self.dt,
-            'order':     self.order
+            'meas_last': dict(self.meas_last),
+            #'start':     self.start,
+            #'meas_dt':   self.meas_dt,
+            #'count':     self.count,
+            #'dt':        self.dt,
+            #'order':     self.order
             }
 
         filename = LinCov.metadata_filename(self.label, self.count, snapshot_label)
@@ -446,7 +462,7 @@ class LinCov(object):
         if os.path.isdir(new_path):
             os.chdir(new_path)
         else:
-            return None
+            return 0
 
         files = glob.glob("time.*.npy")
         counts = []
@@ -459,7 +475,7 @@ class LinCov(object):
         os.chdir(old_path)
 
         if len(counts) == 0:
-            return None
+            return 0
         
         return sorted(counts)[-1]
             
@@ -526,57 +542,54 @@ class LinCov(object):
             copy_from = label
         
         # If no index is given, see if we can reconstruct it.
-        if snapshot_label is None and count is None:
+        if count is None:
             count = LinCov.find_latest_count(copy_from)
 
         # Try to load metadata from the other run. If that doesn't
         # work, see if there's a yml configuration for the desired
         # label.
-        metadata = LinCov.load_metadata(copy_from, count, snapshot_label = snapshot_label)
-        config   = YamlLoader(label)
-        block_dt = config.block_dt
+        #metadata = LinCov.load_metadata(copy_from, count, snapshot_label = snapshot_label)
+        metadata = None
+        config   = YamlLoader(loader.mission, label)
+        block_dt = config.time.block_dt
         if metadata is None:
             metadata = config.as_metadata()
                 
         P, time = LinCov.load_covariance(copy_from, count = count, snapshot_label = snapshot_label)
-
-        # If we were given a snapshot label, we need to determine
-        # which count it falls in the middle of.
-        if snapshot_label and count is None:
-            count      = loader.find_count(time, config.block_dt)
-            block_dt   = (count + 2) * config.block_dt + loader.start - time
-            if count < 0: count = 0
         
-        return LinCov(loader, label, count + 1, P, time,
-                      metadata['dt'],
-                      metadata['meas_dt'],
-                      metadata['meas_last'],
-                      metadata['order'],
-                      block_dt,
-                      config.params)
+        return LinCov(loader, label, count + 1, P, time, config.time,
+                      config.params,
+                      config.command,
+                      block_dt = block_dt)
 
     
-    def __init__(self, loader, label, count, P, time, dt, meas_dt, meas_last, order, block_dt, params):
+    def __init__(self, loader, label, count, P, time, yaml_time_config, params, command, block_dt = None):
         """Constructor, which is basically only called internally."""
         self.loader    = loader
         self.label     = label
         self.count     = count
         self.P         = P
         self.time      = time
-        self.dt        = dt
-        self.meas_dt   = meas_dt
-        self.meas_last = meas_last
-        self.order     = order
-        self.block_dt  = block_dt
+        self.dt        = yaml_time_config.dt
+        self.meas_dt   = yaml_time_config.meas_dt
+        self.meas_last = yaml_time_config.meas_last
+        self.order     = yaml_time_config.order
+        if block_dt is None:
+            self.block_dt  = yaml_time_config.block_dt
+        else:
+            self.block_dt = block_dt
         self.end       = time
         self.finished  = False
         self.params    = params
+        self.sensors   = params.sensors
+        self.command   = command
+        self.time_config = yaml_time_config
 
         # Set process noise parameters
-        self.tau              = np.array(params['tau'])
+        self.tau              = np.array(params.noise['tau'])
         self.beta             = 1/self.tau
-        self.q_a_psd          = max(params.q_a_psd_imu, params.q_a_psd_dynamics)
-        self.q_w_psd          = params.q_w_psd
+        self.q_a_psd          = params.noise.q_a_psd_imu + params.noise.q_a_psd_dynamics
+        self.q_w_psd          = params.noise.q_w_psd
 
         # Generate process noise matrix
         self.Q = self.process_noise()
@@ -588,7 +601,7 @@ class LinCov(object):
     def prepare_next(self):
         """Get ready for next run."""
         self.start = self.end
-        end_time   = self.loader.end
+        end_time   = min(self.loader.end, self.time_config.end)
 
         if end_time > self.start + self.block_dt:
             self.end = self.start + self.block_dt
@@ -711,51 +724,52 @@ class LinCov(object):
 
         if self.time > self.end: # Make sure we don't go past the requested end
             self.time = self.end
-        if self.time >= self.loader.end:
+        if self.time >= self.time_config.end:
             self.finished = True
         else:
             self.finished = False
 
-        # Save state covariances
-        self.save_data('state_sigma', np.hstack(times), {
-            'sr': np.vstack(sr),
-            'sv': np.vstack(sv),
-            'satt': np.vstack(satt),
-            'sba': np.vstack(sba),
-            'sbg': np.vstack(sbg),
-            'elvlh_sr': np.vstack(elvlh_sr),
-            'elvlh_sv': np.vstack(elvlh_sv),
-            'llvlh_sr': np.vstack(llvlh_sr),
-            'llvlh_sv': np.vstack(llvlh_sv)
-        })
+        if len(times) > 0:
+            # Save state covariances
+            self.save_data('state_sigma', np.hstack(times), {
+                'sr': np.vstack(sr),
+                'sv': np.vstack(sv),
+                'satt': np.vstack(satt),
+                'sba': np.vstack(sba),
+                'sbg': np.vstack(sbg),
+                'elvlh_sr': np.vstack(elvlh_sr),
+                'elvlh_sv': np.vstack(elvlh_sv),
+                'llvlh_sr': np.vstack(llvlh_sr),
+                'llvlh_sv': np.vstack(llvlh_sv)
+            })
 
-        # Save extra state information
-        env_dict = {
-            'earth_angle': np.hstack(earth_angle).astype(np.float32),
-            'moon_angle': np.hstack(moon_angle).astype(np.float32),
-            'earth_phase_angle': np.hstack(earth_phase_angle).astype(np.float32),
-            'moon_phase_angle': np.hstack(moon_phase_angle).astype(np.float32),
-            'range_earth': np.hstack(range_earth),
-            'range_moon': np.hstack(range_moon)
-        }
-        # Add ground station elevations
-        for station in station_elevations:
-            env_dict['elevation_' + station] = np.hstack(station_elevations[station]).astype(np.float32)
-            
-        self.save_data('environment', np.hstack(environment_times), env_dict)
+            # Save extra state information
+            env_dict = {
+                'earth_angle': np.hstack(earth_angle).astype(np.float32),
+                'moon_angle': np.hstack(moon_angle).astype(np.float32),
+                'earth_phase_angle': np.hstack(earth_phase_angle).astype(np.float32),
+                'moon_phase_angle': np.hstack(moon_phase_angle).astype(np.float32),
+                'range_earth': np.hstack(range_earth),
+                'range_moon': np.hstack(range_moon)
+            }
+            # Add ground station elevations
+            for station in station_elevations:
+                env_dict['elevation_' + station] = np.hstack(station_elevations[station]).astype(np.float32)
+                
+            self.save_data('environment', np.hstack(environment_times), env_dict)
 
-        # Save measurement covariances
-        for meas_type in update_times:
-            if meas_type in ('horizon_earth', 'horizon_moon'):
-                if len(update_times[meas_type]) > 0:
-                    self.save_data(meas_type,
-                                   np.hstack(update_times[meas_type]), {
-                                       'R': np.dstack(update_Rs[meas_type])
-                                   })
+            # Save measurement covariances
+            for meas_type in update_times:
+                if meas_type in ('horizon_earth', 'horizon_moon'):
+                    if len(update_times[meas_type]) > 0:
+                        self.save_data(meas_type,
+                                    np.hstack(update_times[meas_type]), {
+                                        'R': np.dstack(update_Rs[meas_type])
+                                    })
 
-        # Save information we need for resuming
-        self.save_metadata()
-        LinCov.save_covariance(self.label, self.P, self.time, self.count)
+            # Save information we need for resuming
+            self.save_metadata()
+            LinCov.save_covariance(self.label, self.P, self.time, self.count)
 
         self.count += 1
         self.prepare_next()
